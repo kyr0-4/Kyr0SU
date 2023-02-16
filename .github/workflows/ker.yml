@@ -28,14 +28,6 @@ on:
         description: 'Clang URL'
         required: true
         default: 'https://gitlab.com/VoidUI/snapdragon-clang.git'
-      GCC_ARM64_URL:
-        description: 'GCC_ARM64 URL'
-        required: true
-        default: 'https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git'
-      GCC_ARM_URL:
-        description: 'GCC_ARM URL'
-        required: true
-        default: 'https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git'
       BUILD_EXTRA_COMMAND:
         description: 'Extra build commands(e.g. LLVM=1 LLVM_IAS=1)'
         required: false
@@ -66,8 +58,6 @@ jobs:
         echo "TARGET_ARCH=${{ github.event.inputs.TARGET_ARCH }}" >> $GITHUB_ENV
         echo "KERNEL_FILE=${{ github.event.inputs.KERNEL_FILE }}" >> $GITHUB_ENV
         echo "CLANG_URL=${{ github.event.inputs.CLANG_URL }}" >> $GITHUB_ENV
-        echo "ARM64_URL=${{ github.event.inputs.ARM64_URL }}" >> $GITHUB_ENV
-        echo "ARM_URL=${{ github.event.inputs.ARM_URL }}" >> $GITHUB_ENV
         echo "BUILD_EXTRA_COMMAND=${{ github.event.inputs.BUILD_EXTRA_COMMAND }}" >> $GITHUB_ENV
         echo "USE_KPROBES=${{ github.event.inputs.USE_KPROBES }}" >> $GITHUB_ENV
         echo "USE_KERNELSU=${{ github.event.inputs.USE_KERNELSU }}" >> $GITHUB_ENV
@@ -83,8 +73,8 @@ jobs:
       run: |
         mkdir clang
         git clone --depth=1 ${{ env.CLANG_URL }}
-        git clone --depth=1 ${{ env.GCC_ARM64_URL }} gcc-arm64
-        git clone --depth=1 ${{ env.GCC_ARM_URL }} gcc-arm
+        git clone --depth=1 https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git gcc-arm64
+        git clone --depth=1 https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git gcc-arm
         
     - name: Checkout Kernel Source
       uses: actions/checkout@v3
