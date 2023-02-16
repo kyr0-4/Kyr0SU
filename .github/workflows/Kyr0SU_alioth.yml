@@ -27,10 +27,10 @@ jobs:
                     gnupg gperf htop imagemagick kmod lib32ncurses5-dev lib32readline-dev \
                     lib32z1-dev libc6-dev libcap-dev libexpat1-dev libgmp-dev liblz4-* liblz4-tool \
                     liblzma* libmpc-dev libmpfr-dev libncurses5-dev libsdl1.2-dev libssl-dev \
-                    libtinfo5 libtool libwxgtk3.0-dev libxml-simple-perl libxml2 libxml2-utils \
+                    libtinfo5 libtool libxml-simple-perl libxml2 libxml2-utils \
                     lzip lzma* lzop maven ncftp ncurses-dev patch patchelf pkg-config pngcrush \
                     pngquant python python3 python-all-dev re2c rsync schedtool squashfs-tools subversion \
-                   texinfo unzip w3m xsltproc zip zlib1g-dev zram-config
+                    texinfo unzip w3m xsltproc zip zlib1g-dev zram-config
     
     - name: Download Clang Toolchain
       run: |
