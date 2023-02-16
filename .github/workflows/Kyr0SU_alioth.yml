@@ -21,17 +21,9 @@ jobs:
     - name: Setup Build Environment
       run: |
         sudo apt-get update
-        sudo apt-get install \
-                    adb autoconf automake axel bc bison build-essential ccache clang cmake curl \
-                    expat flex g++ g++-multilib gawk gcc gcc-multilib git git-core git-lfs \
-                    gnupg gperf htop imagemagick kmod lib32ncurses5-dev lib32readline-dev \
-                    lib32z1-dev libc6-dev libcap-dev libexpat1-dev libgmp-dev liblz4-* liblz4-tool \
-                    liblzma* libmpc-dev libmpfr-dev libncurses5-dev libsdl1.2-dev libssl-dev \
-                    libtinfo5 libtool libxml-simple-perl libxml2 libxml2-utils \
-                    lzip lzma* lzop maven ncftp ncurses-dev patch patchelf pkg-config pngcrush \
-                    pngquant python python3 python-all-dev re2c rsync schedtool squashfs-tools subversion \
-                    texinfo unzip w3m xsltproc zip zlib1g-dev zram-config
-    
+        sudo apt-get install unzip zip cmake curl make git-core git gh wget tar zstd build-essential flex ninja-build python-is-python3 ruby-full sqlite3 libxml-simple-perl libswitch-perl apt-utils git bc binutils-dev bison build-essential ca-certificates file flex ninja-build python3-dev texinfo u-boot-tools xz-utils patchelf 
+        sudo apt-get install libelf-dev libssl-dev zlib1g-dev libncurses5  bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev libsdl1.2-dev -y
+        sudo apt-get install libssl-dev -y
     - name: Download Clang Toolchain
       run: |
         mkdir clang
