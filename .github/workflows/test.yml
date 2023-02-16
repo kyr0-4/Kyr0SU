@@ -83,24 +83,27 @@ jobs:
     - name: Build kernel
       run: |
         cd android-kernel
-        PATH=${{ env.CLANG_DIR }}/bin:$PATH
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
-        make CC=clang O=out ARCH=arm64 $KERNEL_DEFCONFIG
+        make O=out ARCH=arm64 $KERNEL_DEFCONFIG
         make -j$(nproc --all) O=out \
                       ARCH=arm64 \
-                      CC=clang \
+                      CC=${{ env.CLANG_DIR }}/bin/clang \
                       CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-gnu- \
                       CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-android- \
                       CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-linux-androideabi- \
-                      LD=ld.lld \
-                      AR=llvm-ar \
-                      NM=llvm-nm \
-                      OBJCOPY=llvm-objcopy \
-                      OBJDUMP=llvm-objdump \
-                      STRIP=llvm-strip \
-                      NM=llvm-nm \
+                      LD=${{ env.CLANG_DIR }}/bin/ld.lld \
+                      AR=${{ env.CLANG_DIR }}/bin/llvm-ar \
+                      NM=${{ env.CLANG_DIR }}/bin/llvm-nm \
+                      STRIP=${{ env.CLANG_DIR }}/bin/llvm-strip \
+                      OBJCOPY=${{ env.CLANG_DIR }}/bin/llvm-objcopy \
+                      OBJDUMP=${{ env.CLANG_DIR }}/bin/llvm-objdump \
+                      READELF=${{ env.CLANG_DIR }}/bin/llvm-readelf \
+                      HOSTCXX=${{ env.CLANG_DIR }}/bin/clang++
+                      HOSTAR=${{ env.CLANG_DIR }}/bin/llvm-ar
+                      HOSTLD=${{ env.CLANG_DIR }}/bin/ld.lld
+                      HOSTCC=${{ env.CLANG_DIR }}/bin/clang \
                       LLVM=1 \
                       LLVM_IAS=1 \
                       HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
