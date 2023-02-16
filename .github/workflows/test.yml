@@ -104,16 +104,16 @@ jobs:
                       LLVM_IAS=1 \
                       HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
 
-- name: Upload the kernel image
+    - name: Upload the kernel image
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.KERNEL_FILE }}${{ env.UPLOADNAME }}-${{ env.DEVICE }}-${{ env.BUILD_TIME }}
+        name: ${{ env.KERNEL_FILE }}
         path: android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/${{ env.KERNEL_FILE }}
 
     - name: Upload DTBO image
       uses: actions/upload-artifact@v3
       with:
-        name: dtbo-${{ env.DEVICE }}-${{ env.BUILD_TIME }}
+        name: dtbo.img
         path: android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/dtbo.img
 
     - name: ZIP Kernel
