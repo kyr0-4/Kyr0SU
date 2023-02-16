@@ -27,7 +27,7 @@ on:
       CLANG_URL:
         description: 'Clang URL'
         required: true
-        default: 'https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230211-release/Clang-17.0.0-20230211.tar.gz'
+        default: 'https://gitlab.com/VoidUI/snapdragon-clang.git'
       BUILD_EXTRA_COMMAND:
         description: 'Extra build commands(e.g. LLVM=1 LLVM_IAS=1)'
         required: false
@@ -72,8 +72,7 @@ jobs:
     - name: Download Clang
       run: |
         mkdir clang
-        wget -q ${{ env.CLANG_URL }} -O clang.tar.gz
-        tar -C clang/ -zxf clang.tar.gz
+        git clone --depth=1 ${{ env.CLANG_URL }}
         
     - name: Checkout Kernel Source
       uses: actions/checkout@v3
@@ -108,7 +107,7 @@ jobs:
     - name: Generate kernel configuration
       run: |
         cd android-kernel
-        export PATH=$GITHUB_WORKSPACE/clang/bin:$PATH
+        export PATH=$GITHUB_WORKSPACE/clang/snapdragon-clang/bin:$PATH
         export ARCH=${{ env.TARGET_ARCH }}
         export SUBARCH=${{ env.TARGET_ARCH }}
         export KBUILD_COMPILER_STRING="$(clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
@@ -119,7 +118,7 @@ jobs:
     - name: Build kernel
       run: |
         cd android-kernel
-        export PATH=$GITHUB_WORKSPACE/clang/bin:$PATH
+        export PATH=$GITHUB_WORKSPACE/clang/snapdragon-clang/bin:$PATH
         export ARCH=${{ env.TARGET_ARCH }}
         export SUBARCH=${{ env.TARGET_ARCH }}
         export KBUILD_COMPILER_STRING="$(clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
