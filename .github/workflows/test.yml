@@ -48,6 +48,11 @@ jobs:
         ref: ${{ env.KERNEL_SOURCE_BRANCH }}
         submodules: recursive
         path: android-kernel
+        
+    - name: Fix:Makefile:Properly disable Unknown Warning Option
+      run: |
+        cd android-kernel
+        sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "Makefile"
 
     - name: Download Clang Toolchain
       run: |
