@@ -80,7 +80,7 @@ jobs:
         KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
         KERNEL_STRING="~Kyr0SU//$IMAGE_VERSION-$KSU_VERSION-$IMAGE_CODE-Snapshot"
         echo "ZIMAGE_NAME=Kyr0SU-${IMAGE_VERSION}-${KSU_VERSION}-${DEVICE_NAME}-AOSP-Snapshot" >> $GITHUB_ENV
-        make $KERNEL_DEFCONFIG O=out ARCH=arm64
+        make CC=clang O=out ARCH=arm64 CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-android- CROSS_COMPILE_COMPAT=${{ env.GCC_ARM_DIR }}/bin/arm-linux-androideabi- NM=llvm-nm LLVM=1 LLVM_IAS=1 $KERNEL_DEFCONFIG 
         sed -i '/CONFIG_LOCALVERSION=/ c  CONFIG_LOCALVERSION='"\"$KERNEL_STRING\""' ' out/.config
         make -j$(nproc --all) O=out \
                       ARCH=arm64 \
