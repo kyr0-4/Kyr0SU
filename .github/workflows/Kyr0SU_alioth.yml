@@ -28,15 +28,15 @@ jobs:
         mkdir clang
         cd clang
         git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git gcc-arm64
-        cd gcc-arm64
+        cd ./gcc-arm64
         GCC_ARM64_DIR=`pwd`
         echo "GCC_ARM64_DIR=$GCC_ARM64_DIR" >> $GITHUB_ENV
-        cd clang
+        cd ..
         git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git gcc-arm
-        cd gcc-arm
+        cd ./gcc-arm
         GCC_ARM_DIR=`pwd`
         echo "GCC_ARM_DIR=$GCC_ARM_DIR" >> $GITHUB_ENV
-        cd clang  
+        cd ..
         git clone --depth=1 https://gitlab.com/VoidUI/snapdragon-clang.git
         cd ./snapdragon-clang
         CLANG_DIR=`pwd`
