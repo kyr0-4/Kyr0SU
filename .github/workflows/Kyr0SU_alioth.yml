@@ -28,7 +28,15 @@ jobs:
         mkdir clang
         cd clang
         git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git gcc-arm64
+        cd gcc-arm64
+        GCC_ARM64_DIR=`pwd`
+        echo "GCC_ARM64_DIR=$GCC_ARM64_DIR" >> $GITHUB_ENV
+        cd clang
         git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git gcc-arm
+        cd gcc-arm
+        GCC_ARM_DIR=`pwd`
+        echo "GCC_ARM_DIR=$GCC_ARM_DIR" >> $GITHUB_ENV
+        cd clang  
         git clone --depth=1 https://gitlab.com/VoidUI/snapdragon-clang.git
         cd ./snapdragon-clang
         CLANG_DIR=`pwd`
@@ -76,9 +84,9 @@ jobs:
         make -j$(nproc --all) O=out \
                       ARCH=arm64 \
                       CC=clang \
-                      CLANG_TRIPLE=/home/runner/work/kyr0SU/kyr0SU/clang/gcc-arm64/bin/aarch64-linux-gnu- \
-                      CROSS_COMPILE=/home/runner/work/kyr0SU/kyr0SU/clang/gcc-arm64/bin/aarch64-linux-android- \
-                      CROSS_COMPILE_ARM32=/home/runner/work/kyr0SU/kyr0SU/clang/gcc-arm/bin/arm-linux-androideabi- \
+                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-gnu- \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-android- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-linux-androideabi- \
                       LD=ld.lld \
                       AR=llvm-ar \
                       NM=llvm-nm \
