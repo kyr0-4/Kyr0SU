@@ -81,7 +81,7 @@ jobs:
                       CROSS_COMPILE_ARM32=/home/runner/work/kyr0SU/kyr0SU/clang/gcc-arm/bin/arm-linux-androideabi- \
                       LD=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/ld.lld \
                       AR=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-ar \
-                      NM=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-nm 
+                      NM=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-nm \
                       OBJCOPY=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-objcopy \
                       OBJDUMP=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-objdump \
                       STRIP=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-strip \
