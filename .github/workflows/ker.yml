@@ -28,6 +28,14 @@ on:
         description: 'Clang URL'
         required: true
         default: 'https://gitlab.com/VoidUI/snapdragon-clang.git'
+      GCC_ARM64_URL:
+        description: 'GCC_ARM64 URL'
+        required: true
+        default: 'https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git'
+      GCC_ARM_URL:
+        description: 'GCC_ARM URL'
+        required: true
+        default: 'https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git'
       BUILD_EXTRA_COMMAND:
         description: 'Extra build commands(e.g. LLVM=1 LLVM_IAS=1)'
         required: false
@@ -35,7 +43,7 @@ on:
       USE_KPROBES:
         description: 'Use Kprobes'
         required: false
-        default: 'true'
+        default: 'false'
         type: boolean
       USE_KERNELSU:
         description: 'Use KernelSU'
@@ -58,6 +66,8 @@ jobs:
         echo "TARGET_ARCH=${{ github.event.inputs.TARGET_ARCH }}" >> $GITHUB_ENV
         echo "KERNEL_FILE=${{ github.event.inputs.KERNEL_FILE }}" >> $GITHUB_ENV
         echo "CLANG_URL=${{ github.event.inputs.CLANG_URL }}" >> $GITHUB_ENV
+        echo "ARM64_URL=${{ github.event.inputs.ARM64_URL }}" >> $GITHUB_ENV
+        echo "ARM_URL=${{ github.event.inputs.ARM_URL }}" >> $GITHUB_ENV
         echo "BUILD_EXTRA_COMMAND=${{ github.event.inputs.BUILD_EXTRA_COMMAND }}" >> $GITHUB_ENV
         echo "USE_KPROBES=${{ github.event.inputs.USE_KPROBES }}" >> $GITHUB_ENV
         echo "USE_KERNELSU=${{ github.event.inputs.USE_KERNELSU }}" >> $GITHUB_ENV
@@ -73,6 +83,8 @@ jobs:
       run: |
         mkdir clang
         git clone --depth=1 ${{ env.CLANG_URL }}
+        git clone --depth=1 ${{ env.GCC_ARM64_URL }} gcc-arm64
+        git clone --depth=1 ${{ env.GCC_ARM_URL }} gcc-arm
         
     - name: Checkout Kernel Source
       uses: actions/checkout@v3
@@ -96,9 +108,9 @@ jobs:
             echo "UPLOADNAME=-Kyr0SU" >> $GITHUB_ENV
         else
             if git apply --check ../KernelSU.patch ; then
-                wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
-                git apply ../KernelSU.patch
-                curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+            curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+            wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
+            git apply ./KernelSU.patch
                 echo "UPLOADNAME=-Kyr0SU" >> $GITHUB_ENV
             else
                 echo "KernelSU Patching failed"
@@ -126,7 +138,7 @@ jobs:
         export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
         make -j$(nproc --all) O=out ARCH=arm64 savedefconfig
         cp -f out/defconfig arch/${{ env.TARGET_ARCH }}/configs/${{ env.KERNEL_DEFCONFIG }}
-        make -j$(nproc --all) O=out ARCH=${{ env.TARGET_ARCH }} CC=clang CROSS_COMPILE=aarch64-linux-gnu- ${{ env.BUILD_EXTRA_COMMAND }}
+        make -j$(nproc --all) O=out ARCH=${{ env.TARGET_ARCH }} CC=clang CROSS_COMPILE=$GITHUB_WORKSPACE/clang/gcc-arm64/bin/aarch64-linux-android- CROSS_COMPILE_COMPAT=$GITHUB_WORKSPACE/clang/gcc-arm/bin/arm-linux-androideabi- ${{ env.BUILD_EXTRA_COMMAND }}
     - name: Check the kernel output files
       run: |
        if [ -f android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/${{ env.KERNEL_FILE }} ] ; then
