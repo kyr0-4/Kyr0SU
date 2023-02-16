@@ -75,17 +75,17 @@ jobs:
         sed -i '/CONFIG_LOCALVERSION=/ c  CONFIG_LOCALVERSION='"\"$KERNEL_STRING\""' ' out/.config
         make -j$(nproc --all) O=out \
                       ARCH=arm64 \
-                      CC=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/clang \
+                      CC=clang \
                       CLANG_TRIPLE=/home/runner/work/kyr0SU/kyr0SU/clang/gcc-arm64/bin/aarch64-linux-gnu- \
                       CROSS_COMPILE=/home/runner/work/kyr0SU/kyr0SU/clang/gcc-arm64/bin/aarch64-linux-android- \
                       CROSS_COMPILE_ARM32=/home/runner/work/kyr0SU/kyr0SU/clang/gcc-arm/bin/arm-linux-androideabi- \
-                      LD=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/ld.lld \
-                      AR=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-ar \
-                      NM=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-nm \
-                      OBJCOPY=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-objcopy \
-                      OBJDUMP=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-objdump \
-                      STRIP=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-strip \
-                      NM=/home/runner/work/kyr0SU/kyr0SU/clang/snapdragon-clang/bin/llvm-nm \
+                      LD=ld.lld \
+                      AR=llvm-ar \
+                      NM=llvm-nm \
+                      OBJCOPY=llvm-objcopy \
+                      OBJDUMP=llvm-objdump \
+                      STRIP=llvm-strip \
+                      NM=llvm-nm \
                       LLVM=1 \
                       LLVM_IAS=1 \
                       HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
