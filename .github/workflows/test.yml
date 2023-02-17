@@ -78,6 +78,11 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
         git apply ./KernelSU.patch
+        
+    - name: Download anykernel
+      run: |
+        cd android-kernel
+        git clone https://github.com/kyr0-4/kyr0SU.git anykernel
 
     - name: Build kernel
       run: |
@@ -85,7 +90,7 @@ jobs:
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
-        make O=out ARCH=arm64 clean mrproper CC=${{ env.CLANG_DIR }}/bin/clang $KERNEL_DEFCONFIG
+        make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/bin/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
@@ -119,19 +124,13 @@ jobs:
       with:
         name: dtbo
         path: android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/dtbo.img
-        
-    - name: Download anykernel
-      run: |
-        cd android-kernel
-        git clone https://github.com/kyr0-4/kyr0SU.git anykernel
 
     - name: Make Anykernel for the kernel
       run: |
-        cd ./android-kernel/anykernel/anykernel
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         echo "FINAL_ZINAME="Kyr0SU-AOSP-${TIME}"" >> $GITHUB_ENV
-        cp -fp ../android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/${{ env.KERNEL_FILE }} ./
-        cp -fp ../android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/dtbo.img ./
+        cp -fp ../android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/${{ env.KERNEL_FILE }} ./android-kernel/anykernel/anykernel
+        cp -fp ../android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/dtbo.img ./android-kernel/anykernel/anykernel
 
     - name: Upload AnyKernel zip
       uses: actions/upload-artifact@v3
