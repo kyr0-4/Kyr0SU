@@ -58,12 +58,12 @@ jobs:
       run: |
         mkdir clang
         cd clang
-        git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git gcc-arm64
+        git clone --depth=1 --branch gcc-arm64 https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
         cd ./gcc-arm64
         GCC_ARM64_DIR=`pwd`
         echo "GCC_ARM64_DIR=$GCC_ARM64_DIR" >> $GITHUB_ENV
         cd ..
-        git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git gcc-arm
+        git clone --depth=1 --branch gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
         cd ./gcc-arm
         GCC_ARM_DIR=`pwd`
         echo "GCC_ARM_DIR=$GCC_ARM_DIR" >> $GITHUB_ENV
@@ -91,13 +91,34 @@ jobs:
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
-        make O=out ARCH=arm64 $KERNEL_DEFCONFIG
-        make -j$(nproc --all) O=out \
+        make -j$(nproc --all) \
+                      O=out \
+                      clean \
+                      mrproper \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/bin/clang \
-                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-gnu- \
-                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-android- \
-                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-linux-androideabi- \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-elf- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-eabi- \
+                      LD=${{ env.CLANG_DIR }}/bin/ld.lld \
+                      AR=${{ env.CLANG_DIR }}/bin/llvm-ar \
+                      NM=${{ env.CLANG_DIR }}/bin/llvm-nm \
+                      STRIP=${{ env.CLANG_DIR }}/bin/llvm-strip \
+                      OBJCOPY=${{ env.CLANG_DIR }}/bin/llvm-objcopy \
+                      OBJDUMP=${{ env.CLANG_DIR }}/bin/llvm-objdump \
+                      READELF=${{ env.CLANG_DIR }}/bin/llvm-readelf \
+                      HOSTCXX=${{ env.CLANG_DIR }}/bin/clang++
+                      HOSTAR=${{ env.CLANG_DIR }}/bin/llvm-ar
+                      HOSTLD=${{ env.CLANG_DIR }}/bin/ld.lld
+                      HOSTCC=${{ env.CLANG_DIR }}/bin/clang \
+                      LLVM=1 \
+                      LLVM_IAS=1 \
+                      $KERNEL_DEFCONFIG
+        make -j$(nproc --all) \
+                      O=out \
+                      ARCH=arm64 \
+                      CC=${{ env.CLANG_DIR }}/bin/clang \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-elf- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-eabi- \
                       LD=${{ env.CLANG_DIR }}/bin/ld.lld \
                       AR=${{ env.CLANG_DIR }}/bin/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/bin/llvm-nm \
@@ -127,6 +148,7 @@ jobs:
 
     - name: Make Anykernel for the kernel
       run: |
+        cd ..
         cd $GITHUB_WORKSPACE/anykernel/anykernel
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         echo "FINAL_ZINAME="Kyr0SU-AOSP-${TIME}"" >> $GITHUB_ENV
