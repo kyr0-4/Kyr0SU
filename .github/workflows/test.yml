@@ -97,11 +97,9 @@ jobs:
         echo "ZIMAGE_DIR="${KERNEL_DIR}/out/arch/arm64/boot"" >> $GITHUB_ENV
         ARCH=arm64
         SUBARCH=arm64
-        IMAGE_VERSION=`grep "CONFIG_LOCALVERSION=" arch/arm64/configs/${KERNEL_DEFCONFIG} | awk -F'[/-]' '{print $3}' `
-        IMAGE_CODE=`grep "CONFIG_LOCALVERSION=" arch/arm64/configs/${KERNEL_DEFCONFIG} | awk -F'[/-]' '{print $4}' | sed 's/"//' `
         cd $KERNEL_DIR
         make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/bin/clang $KERNEL_DEFCONFIG
-        KERNEL_STRING="~KyroSU//$IMAGE_VERSION-$IMAGE_CODE-(EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)"
+        KERNEL_STRING="~KyroSU(EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)"
         sed -i '/CONFIG_LOCALVERSION=/ c  CONFIG_LOCALVERSION='"\"$KERNEL_STRING\""' ' out/.config
         make -j$(nproc --all) \
                       O=out \
