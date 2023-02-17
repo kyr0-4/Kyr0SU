@@ -92,10 +92,10 @@ jobs:
       run: |
         cd android-kernel
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
-        sed -i 's/CONFIG_LOCALVERSION="-N0kernel"/CONFIG_LOCALVERSION="-Kyr0SU(EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)"/g' "${KERNEL_DEFCONFIG}"
         KERNEL_DIR=`pwd`
         echo "KERNEL_DIR=${KERNEL_DIR}" >> $GITHUB_ENV
         echo "ZIMAGE_DIR="${KERNEL_DIR}/out/arch/arm64/boot"" >> $GITHUB_ENV
+        sed -i 's/CONFIG_LOCALVERSION="-N0kernel"/CONFIG_LOCALVERSION="-Kyr0SU(EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)"/g' "$KERNEL_DIR/arch/arm64/configs/vendor/alioth_defconfig"
         ARCH=arm64
         SUBARCH=arm64
         cd $KERNEL_DIR
