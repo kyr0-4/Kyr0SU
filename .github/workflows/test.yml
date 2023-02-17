@@ -92,6 +92,7 @@ jobs:
       run: |
         cd android-kernel
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
+        sed -i 's/CONFIG_LOCALVERSION="-N0kernel"/CONFIG_LOCALVERSION="-Kyr0SU(EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)"/g' "${KERNEL_DEFCONFIG}"
         KERNEL_DIR=`pwd`
         echo "KERNEL_DIR=${KERNEL_DIR}" >> $GITHUB_ENV
         echo "ZIMAGE_DIR="${KERNEL_DIR}/out/arch/arm64/boot"" >> $GITHUB_ENV
@@ -99,8 +100,6 @@ jobs:
         SUBARCH=arm64
         cd $KERNEL_DIR
         make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/bin/clang $KERNEL_DEFCONFIG
-        KERNEL_STRING="~KyroSU(EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)"
-        sed -i '/CONFIG_LOCALVERSION=/ c  CONFIG_LOCALVERSION='"\"$KERNEL_STRING\""' ' out/.config
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
