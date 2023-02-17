@@ -145,5 +145,6 @@ jobs:
     - name: Upload AnyKernel zip
       uses: actions/upload-artifact@v3
       with:
-        name: ${FINAL_ZINAME}
+        name: ${{ env.FINAL_ZINAME}}
         path: ${{ env.ANYKERNEL_DIR }}
+        
