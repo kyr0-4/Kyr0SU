@@ -1,4 +1,4 @@
-name: Build Kernel kyr0su
+name: Build Kernel kyr0SU for Alioth (EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)
 
 on:
   workflow_dispatch:
@@ -34,12 +34,11 @@ jobs:
         echo "KERNEL_SOURCE_BRANCH=${{ github.event.inputs.KERNEL_SOURCE_BRANCH }}" >> $GITHUB_ENV
         echo "TARGET_ARCH=${{ github.event.inputs.TARGET_ARCH }}" >> $GITHUB_ENV
         echo "KERNEL_FILE=${{ github.event.inputs.KERNEL_FILE }}" >> $GITHUB_ENV
-
     - name: Setup build kernel environment
       run: |
         sudo apt-get update
         sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl libncurses5 zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3
-
+    
     - name: Checkout Kernel Source
       uses: actions/checkout@v3
       with:
@@ -53,7 +52,7 @@ jobs:
       run: |
         cd android-kernel
         sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "Makefile"
-
+    
     - name: Download Clang Toolchain
       run: |
         mkdir clang
@@ -87,7 +86,6 @@ jobs:
         cd ./anykernel/anykernel
         ANYKERNEL_DIR=`pwd`
         echo "ANYKERNEL_DIR=$ANYKERNEL_DIR" >> $GITHUB_ENV
-
     - name: Build kernel
       run: |
         cd android-kernel
@@ -104,9 +102,6 @@ jobs:
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/bin/clang \
-                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-gnu- \
-                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-android- \
-                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-linux-androideabi- \
                       LD=${{ env.CLANG_DIR }}/bin/ld.lld \
                       AR=${{ env.CLANG_DIR }}/bin/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/bin/llvm-nm \
@@ -121,7 +116,7 @@ jobs:
                       LLVM=1 \
                       LLVM_IAS=1 \
                       HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
-
+    
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
       with:
@@ -141,10 +136,9 @@ jobs:
         echo "FINAL_ZINAME="Kyr0SU-AOSP-${TIME}"" >> $GITHUB_ENV
         cp -fp ${{ env.ZIMAGE_DIR }}/Image.gz ${{ env.ANYKERNEL_DIR }}
         cp -fp ${{ env.ZIMAGE_DIR }}/dtbo.img ${{ env.ANYKERNEL_DIR }}
-
     - name: Upload AnyKernel zip
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.FINAL_ZINAME}}
         path: ${{ env.ANYKERNEL_DIR }}
-        
+      
