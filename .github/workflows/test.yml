@@ -34,6 +34,7 @@ jobs:
         echo "KERNEL_SOURCE_BRANCH=${{ github.event.inputs.KERNEL_SOURCE_BRANCH }}" >> $GITHUB_ENV
         echo "TARGET_ARCH=${{ github.event.inputs.TARGET_ARCH }}" >> $GITHUB_ENV
         echo "KERNEL_FILE=${{ github.event.inputs.KERNEL_FILE }}" >> $GITHUB_ENV
+
     - name: Setup build kernel environment
       run: |
         sudo apt-get update
@@ -57,13 +58,15 @@ jobs:
       run: |
         mkdir clang
         cd clang
-        git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git gcc-arm64
-        cd ./gcc-arm64
+        wget -q https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-elf.tar.xz -O gcc-arm64.tar.xz
+        tar -C clang/ -zxf gcc-arm64.tar.xz
+        cd ./arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-elf
         GCC_ARM64_DIR=`pwd`
         echo "GCC_ARM64_DIR=$GCC_ARM64_DIR" >> $GITHUB_ENV
         cd ..
-        git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git gcc-arm
-        cd ./gcc-arm
+        wget -q https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz -O gcc-arm.tar.xz
+        tar -C clang/ -zxf gcc-arm.tar.xz
+        cd ./arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi
         GCC_ARM_DIR=`pwd`
         echo "GCC_ARM_DIR=$GCC_ARM_DIR" >> $GITHUB_ENV
         cd ..
@@ -86,6 +89,7 @@ jobs:
         cd ./anykernel/anykernel
         ANYKERNEL_DIR=`pwd`
         echo "ANYKERNEL_DIR=$ANYKERNEL_DIR" >> $GITHUB_ENV
+
     - name: Build kernel
       run: |
         cd android-kernel
@@ -102,6 +106,8 @@ jobs:
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/bin/clang \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-none-elf- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-none-eabi- \
                       LD=${{ env.CLANG_DIR }}/bin/ld.lld \
                       AR=${{ env.CLANG_DIR }}/bin/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/bin/llvm-nm \
@@ -136,9 +142,10 @@ jobs:
         echo "FINAL_ZINAME="Kyr0SU-AOSP-${TIME}"" >> $GITHUB_ENV
         cp -fp ${{ env.ZIMAGE_DIR }}/Image.gz ${{ env.ANYKERNEL_DIR }}
         cp -fp ${{ env.ZIMAGE_DIR }}/dtbo.img ${{ env.ANYKERNEL_DIR }}
+
     - name: Upload AnyKernel zip
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.FINAL_ZINAME}}
         path: ${{ env.ANYKERNEL_DIR }}
-      
+    
