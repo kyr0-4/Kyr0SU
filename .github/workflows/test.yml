@@ -58,7 +58,7 @@ jobs:
       run: |
         mkdir clang
         cd clang
-        git clone --depth=1 --branch gcc-arm64 https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
+        git clone --depth=1 --branch gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
         cd ./gcc-arm64
         GCC_ARM64_DIR=`pwd`
         echo "GCC_ARM64_DIR=$GCC_ARM64_DIR" >> $GITHUB_ENV
