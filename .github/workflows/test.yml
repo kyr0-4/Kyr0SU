@@ -92,6 +92,7 @@ jobs:
       run: |
         cd android-kernel
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
+        KERNEL_DEFCONFIG=vendor/alioth_defconfig
         KERNEL_DIR=`pwd`
         echo "KERNEL_DIR=${KERNEL_DIR}" >> $GITHUB_ENV
         echo "ZIMAGE_DIR="${KERNEL_DIR}/out/arch/arm64/boot"" >> $GITHUB_ENV
@@ -147,4 +148,3 @@ jobs:
       with:
         name: ${{ env.FINAL_ZINAME}}
         path: ${{ env.ANYKERNEL_DIR }}
-    
