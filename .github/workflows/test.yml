@@ -72,6 +72,7 @@ jobs:
         cd ./snapdragon-clang
         CLANG_DIR=`pwd`
         echo "CLANG_DIR=$CLANG_DIR" >> $GITHUB_ENV
+        
     - name: Setup KernelSU
       run: |
         cd android-kernel
