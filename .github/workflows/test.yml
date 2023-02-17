@@ -58,12 +58,12 @@ jobs:
       run: |
         mkdir clang
         cd clang
-        git clone --depth=1 --branch gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
+        git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git gcc-arm64
         cd ./gcc-arm64
         GCC_ARM64_DIR=`pwd`
         echo "GCC_ARM64_DIR=$GCC_ARM64_DIR" >> $GITHUB_ENV
         cd ..
-        git clone --depth=1 --branch gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
+        git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git gcc-arm
         cd ./gcc-arm
         GCC_ARM_DIR=`pwd`
         echo "GCC_ARM_DIR=$GCC_ARM_DIR" >> $GITHUB_ENV
@@ -72,7 +72,6 @@ jobs:
         cd ./snapdragon-clang
         CLANG_DIR=`pwd`
         echo "CLANG_DIR=$CLANG_DIR" >> $GITHUB_ENV
-
     - name: Setup KernelSU
       run: |
         cd android-kernel
@@ -91,8 +90,9 @@ jobs:
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/bin/clang \
-                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-elf- \
-                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-eabi- \
+                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-gnu- \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-android- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-linux-androideabi- \
                       LD=${{ env.CLANG_DIR }}/bin/ld.lld \
                       AR=${{ env.CLANG_DIR }}/bin/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/bin/llvm-nm \
