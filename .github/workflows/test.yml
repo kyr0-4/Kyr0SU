@@ -83,13 +83,21 @@ jobs:
       run: |
         cd android-kernel
         git clone https://github.com/kyr0-4/kyr0SU.git anykernel
+        cd ./anykernel/anykernel
+        ANYKERNEL_DIR=`pwd`
+        echo "ANYKERNEL_DIR=$ANYKERNEL_DIR" >> $GITHUB_ENV
 
     - name: Build kernel
       run: |
         cd android-kernel
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
+        KERNEL_DEFCONFIG=vendor/alioth_defconfig
+        KERNEL_DIR=`pwd`
+        echo "KERNEL_DIR=${KERNEL_DIR}" >> $GITHUB_ENV
+        echo "ZIMAGE_DIR="${KERNEL_DIR}/out/arch/arm64/boot"" >> $GITHUB_ENV
         ARCH=arm64
         SUBARCH=arm64
+        cd $KERNEL_DIR
         make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/bin/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
@@ -127,10 +135,11 @@ jobs:
 
     - name: Make Anykernel for the kernel
       run: |
+        cd android-kernel
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         echo "FINAL_ZINAME="Kyr0SU-AOSP-${TIME}"" >> $GITHUB_ENV
-        cp -fp ../android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/${{ env.KERNEL_FILE }} ./android-kernel/anykernel/anykernel
-        cp -fp ../android-kernel/out/arch/${{ env.TARGET_ARCH }}/boot/dtbo.img ./android-kernel/anykernel/anykernel
+        cp -fp ${{ env.ZIMAGE_DIR }}/Image.gz tmp
+        cp -fp ${{ env.ZIMAGE_DIR }}/dtbo.img tmp
 
     - name: Upload AnyKernel zip
       uses: actions/upload-artifact@v3
