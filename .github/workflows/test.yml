@@ -58,15 +58,13 @@ jobs:
       run: |
         mkdir clang
         cd clang
-        wget -q https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-elf.tar.xz -O gcc-arm64.tar.xz
-        tar -xf gcc-arm64.tar.xz
-        cd ./arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-elf
+        git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git gcc-arm64
+        cd ./gcc-arm64
         GCC_ARM64_DIR=`pwd`
         echo "GCC_ARM64_DIR=$GCC_ARM64_DIR" >> $GITHUB_ENV
         cd ..
-        wget -q https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz -O gcc-arm.tar.xz
-        tar -xf gcc-arm.tar.xz
-        cd ./arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi
+        git clone --depth=1 --branch thirteen https://github.com/PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git gcc-arm
+        cd ./gcc-arm
         GCC_ARM_DIR=`pwd`
         echo "GCC_ARM_DIR=$GCC_ARM_DIR" >> $GITHUB_ENV
         cd ..
@@ -94,20 +92,24 @@ jobs:
       run: |
         cd android-kernel
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
-        KERNEL_DEFCONFIG=vendor/alioth_defconfig
         KERNEL_DIR=`pwd`
         echo "KERNEL_DIR=${KERNEL_DIR}" >> $GITHUB_ENV
         echo "ZIMAGE_DIR="${KERNEL_DIR}/out/arch/arm64/boot"" >> $GITHUB_ENV
         ARCH=arm64
         SUBARCH=arm64
+        IMAGE_VERSION=`grep "CONFIG_LOCALVERSION=" arch/arm64/configs/${KERNEL_DEFCONFIG} | awk -F'[/-]' '{print $3}' `
+        IMAGE_CODE=`grep "CONFIG_LOCALVERSION=" arch/arm64/configs/${KERNEL_DEFCONFIG} | awk -F'[/-]' '{print $4}' | sed 's/"//' `
         cd $KERNEL_DIR
         make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/bin/clang $KERNEL_DEFCONFIG
+        KERNEL_STRING="~KyroSU//$IMAGE_VERSION-$IMAGE_CODE-(EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)"
+        sed -i '/CONFIG_LOCALVERSION=/ c  CONFIG_LOCALVERSION='"\"$KERNEL_STRING\""' ' out/.config
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/bin/clang \
-                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-none-elf- \
-                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-none-eabi- \
+                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-gnu- \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/bin/aarch64-linux-android- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/bin/arm-linux-androideabi- \
                       LD=${{ env.CLANG_DIR }}/bin/ld.lld \
                       AR=${{ env.CLANG_DIR }}/bin/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/bin/llvm-nm \
@@ -142,6 +144,7 @@ jobs:
         echo "FINAL_ZINAME="Kyr0SU-AOSP-${TIME}"" >> $GITHUB_ENV
         cp -fp ${{ env.ZIMAGE_DIR }}/Image.gz ${{ env.ANYKERNEL_DIR }}
         cp -fp ${{ env.ZIMAGE_DIR }}/dtbo.img ${{ env.ANYKERNEL_DIR }}
+        cp -fp ${{ env.ZIMAGE_DIR }}/dtb ${{ env.ANYKERNEL_DIR }}
 
     - name: Upload AnyKernel zip
       uses: actions/upload-artifact@v3
