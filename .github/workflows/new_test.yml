@@ -88,9 +88,9 @@ jobs:
                       OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
                       OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
-                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
-                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
-                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
+                      HOSTCXX=${{ env.CLANG_DIR }}/clang++
+                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar
+                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld
                       HOSTCC=${{ env.CLANG_DIR }}/clang \
                       LLVM=1 \
                       LLVM_IAS=1 \
