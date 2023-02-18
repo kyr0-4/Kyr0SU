@@ -38,10 +38,6 @@ jobs:
         cd clang
         bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S
 
-    - name: Download Compiler - Snapdragon LLVM
-      run: |
-        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
-
     - name: Variables
       run: |
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
@@ -73,24 +69,24 @@ jobs:
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
-        make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
+        make O=out ARCH=arm64 CC=${{ env.NEUTRON_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
-                      CC=${{ env.CLANG_DIR }}/clang \
+                      CC=${{ env.NEUTRON_DIR }}/clang \
                       CROSS_COMPILE=${{ env.NEUTRON_DIR }}/aarch64-linux-gnu- \
                       CROSS_COMPILE_COMPAT=${{ env.NEUTRON_DIR }}/arm-linux-gnueabi- \
-                      LD=${{ env.CLANG_DIR }}/ld.lld \
-                      AR=${{ env.CLANG_DIR }}/llvm-ar \
-                      NM=${{ env.CLANG_DIR }}/llvm-nm \
-                      STRIP=${{ env.CLANG_DIR }}/llvm-strip \
-                      OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
-                      OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
-                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
-                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
-                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
-                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
-                      HOSTCC=${{ env.CLANG_DIR }}/clang \
+                      LD=${{ env.NEUTRON_DIR }}/ld.lld \
+                      AR=${{ env.NEUTRON_DIR }}/llvm-ar \
+                      NM=${{ env.NEUTRON_DIR }}/llvm-nm \
+                      STRIP=${{ env.NEUTRON_DIR }}/llvm-strip \
+                      OBJCOPY=${{ env.NEUTRON_DIR }}/llvm-objcopy \
+                      OBJDUMP=${{ env.NEUTRON_DIR }}/llvm-objdump \
+                      READELF=${{ env.NEUTRON_DIR }}/llvm-readelf \
+                      HOSTCXX=${{ env.NEUTRON_DIR }}/clang++ \
+                      HOSTAR=${{ env.NEUTRON_DIR }}/llvm-ar \
+                      HOSTLD=${{ env.NEUTRON_DIR }}/ld.lld \
+                      HOSTCC=${{ env.NEUTRON_DIR }}/clang \
                       LLVM=1 \
                       LLVM_IAS=1
 
