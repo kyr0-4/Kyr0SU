@@ -45,6 +45,7 @@ jobs:
 
     - name: Variables
       run: |
+        cd $GITHUB_WORKSPACE
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
         echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
         echo "GCC_ARM64_DIR=$GITHUB_WORKSPACE/gcc-arm64/bin" >> $GITHUB_ENV
