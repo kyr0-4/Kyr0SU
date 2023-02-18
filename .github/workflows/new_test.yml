@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
+    - name: Setup build kernel environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl libncurses5 zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3
+    
     - name: Checkout Kernel Source Code
       uses: actions/checkout@v3
       with:
@@ -17,14 +22,6 @@ jobs:
         repository: EmanuelCN/kernel_xiaomi_sm8250
         ref: staging
         path: android-kernel
-
-    - name: Checkout Compiler - Snapdragon LLVM
-      uses: actions/checkout@v3
-      with:
-        github-server-url: 'https://gitlab.com'
-        repository: VoidUI/snapdragon-clang
-        ref: aosp-13
-        path: snapdragon-clang
 
     - name: Checkout GCC-ARM64
       uses: actions/checkout@v3
@@ -41,11 +38,10 @@ jobs:
         repository: PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9
         ref: thirteen
         path: gcc-arm
-
-    - name: Setup build kernel environment
+        
+    - name: Download Compiler - Snapdragon LLVM
       run: |
-        sudo apt-get update
-        sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl libncurses5 zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3
+        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
 
     - name: Variables
       run: |
