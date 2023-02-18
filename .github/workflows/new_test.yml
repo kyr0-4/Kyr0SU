@@ -38,78 +38,82 @@ jobs:
         repository: PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9
         ref: thirteen
         path: gcc-arm
+        
+    - name: Download Compiler - Snapdragon LLVM
+      run: |
+        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
 
     - name: Variables
       run: |
-        export KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel
-        export CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin
-        export GCC_ARM64_DIR=$GITHUB_WORKSPACE/gcc-arm64/bin
-        export GCC_ARM_DIR=$GITHUB_WORKSPACE/gcc-arm/bin
-        export ZIMAGE_DIR=$(KERNEL_DIR)/out/arch/arm64/boot
-        export KERNEL_DEFCONFIG=vendor/alioth_defconfig
-        export ARCH=arm64
-        export SUBARCH=arm64
-        export TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
-        export DEVICE=alioth
-        export ZIPNAME=Kyr0SU
-        export FINAL_ZIP=${ZIPNAME}-${DEVICE}-KERNEL-AOSP-${TIME}.zip
+        echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
+        echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
+        echo "GCC_ARM64_DIR=$GITHUB_WORKSPACE/gcc-arm64/bin" >> $GITHUB_ENV
+        echo "GCC_ARM_DIR=$GITHUB_WORKSPACE/gcc-arm/bin" >> $GITHUB_ENV
+        echo "ZIMAGE_DIR=${{ env.KERNEL_DIR }}/out/arch/arm64/boot" >> $GITHUB_ENV
+        echo "KERNEL_DEFCONFIG=vendor/alioth_defconfig" >> $GITHUB_ENV
+        echo "ARCH=arm64" >> $GITHUB_ENV
+        echo "SUBARCH=arm64" >> $GITHUB_ENV
+        echo "TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")" >> $GITHUB_ENV
+        echo "DEVICE=alioth" >> $GITHUB_ENV
+        echo "ZIPNAME=Kyr0SU" >> $GITHUB_ENV
+        echo "FINAL_ZIP=${ZIPNAME}-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
 
     - name: Fix:Makefile:Properly disable Unknown Warning Option
       run: |
-        sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "$(KERNEL_DIR)/Makefile"
+        sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "${{ env.KERNEL_DIR }}/Makefile"
 
     - name: Apply KernelSU
       run: |
-        cd ${KERNEL_DIR}
+        cd ${{ env.KERNEL_DIR }}
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
         git apply ./KernelSU.patch
 
     - name: Build kernel
       run: |
-        cd ${KERNEL_DIR}
+        cd ${{ env.KERNEL_DIR }}
         make O=out clean
-        make O=out ARCH=arm64 CC=$(CLAN_DIR)/clang $KERNEL_DEFCONFIG
+        make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
-                      CC=$(CLAN_DIR)/clang \
-                      CLANG_TRIPLE=$(GCC_ARM64_DIR)/aarch64-linux-gnu- \
-                      CROSS_COMPILE=$(GCC_ARM64_DIR)/aarch64-linux-android- \
-                      CROSS_COMPILE_ARM32=$(GCC_ARM_DIR)/arm-linux-androideabi- \
-                      LD=$(CLAN_DIR)/ld.lld \
-                      AR=$(CLAN_DIR)/llvm-ar \
-                      NM=$(CLAN_DIR)/llvm-nm \
-                      STRIP=$(CLAN_DIR)/llvm-strip \
-                      OBJCOPY=$(CLAN_DIR)/llvm-objcopy \
-                      OBJDUMP=$(CLAN_DIR)/llvm-objdump \
-                      READELF=$(CLAN_DIR)/llvm-readelf \
-                      HOSTCXX=$(CLAN_DIR)/clang++ \
-                      HOSTAR=$(CLAN_DIR)/llvm-ar \
-                      HOSTLD=$(CLAN_DIR)/ld.lld \
-                      HOSTCC=$(CLAN_DIR)/clang \
+                      CC=${{ env.CLANG_DIR }}/clang \
+                      CLANG_TRIPLE=${{${{ env.GCC_ARM64_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE=${{${{ env.GCC_ARM64_DIR }}/aarch64-linux-android- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/arm-linux-androideabi- \
+                      LD=${{ env.CLANG_DIR }}/ld.lld \
+                      AR=${{ env.CLANG_DIR }}/llvm-ar \
+                      NM=${{ env.CLANG_DIR }}/llvm-nm \
+                      STRIP=${{ env.CLANG_DIR }}/llvm-strip \
+                      OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
+                      OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
+                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
+                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
+                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
+                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
+                      HOSTCC=${{ env.CLANG_DIR }}/clang \
                       LLVM=1 \
                       LLVM_IAS=1 \
                       HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
 
     - name: generate dtb
       run: |
-        find $(KERNEL_DIR)/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >$(KERNEL_DIR)/out/arch/arm64/boot/dtb
+        find ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtb
 
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
       with:
         name: Image.gz
-        path: $(ZIMAGE_DIR)/Image.gz
+        path: ${{ env.ZIMAGE_DIR }}/Image.gz
 
     - name: Upload DTBO image
       uses: actions/upload-artifact@v3
       with:
         name: dtbo
-        path: $(ZIMAGE_DIR)/dtbo.img
+        path: ${{ env.ZIMAGE_DIR }}/dtbo.img
 
     - name: Upload DTB image
       uses: actions/upload-artifact@v3
       with:
         name: dtb
-        path: $(ZIMAGE_DIR)/dtb
+        path: ${{ env.ZIMAGE_DIR }}/dtb
