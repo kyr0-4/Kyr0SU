@@ -24,6 +24,22 @@ jobs:
         ref: staging
         path: android-kernel
 
+    - name: Checkout GCC-ARM64
+      uses: actions/checkout@v3
+      with:
+        github-server-url: 'https://github.com'
+        repository: LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-gnu-9.3
+        ref: lineage-20.0
+        path: gcc-arm64
+
+    - name: Checkout GCC-ARM
+      uses: actions/checkout@v3
+      with:
+        github-server-url: 'https://github.com'
+        repository: PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9
+        ref: thirteen
+        path: gcc-arm
+        
     - name: Checkout AnyKernel
       uses: actions/checkout@v3
       with:
@@ -32,18 +48,14 @@ jobs:
         ref: main
         path: anykernel
         
-    - name: Download Compiler - Neutron clang
+    - name: Download Compiler - Snapdragon LLVM
       run: |
-        mkdir clang
-        cd clang
-        bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S
-        bash <(curl -s "https://gist.githubusercontent.com/dakkshesh07/240736992abf0ea6f0ee1d8acb57a400/raw/a835c3cf8d99925ca33cec3b210ee962904c9478/patch-for-old-glibc.sh") -S
+        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
 
     - name: Variables
       run: |
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
         echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
-        echo "NEUTRON_DIR=$GITHUB_WORKSPACE/clang/bin" >> $GITHUB_ENV
         echo "GCC_ARM64_DIR=$GITHUB_WORKSPACE/gcc-arm64/bin" >> $GITHUB_ENV
         echo "GCC_ARM_DIR=$GITHUB_WORKSPACE/gcc-arm/bin" >> $GITHUB_ENV
         echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
@@ -52,7 +64,7 @@ jobs:
         DEVICE=alioth
         ZIPNAME=Kyr0SU
         echo "FINAL_ZIP=${ZIPNAME}-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
-        
+
     - name: Fix:Makefile:Properly disable Unknown Warning Option
       run: |
         sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "android-kernel/Makefile"
@@ -70,24 +82,21 @@ jobs:
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
-        make O=out ARCH=arm64 CC=${{ env.NEUTRON_DIR }}/clang $KERNEL_DEFCONFIG
+        make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
-                      CC=${{ env.NEUTRON_DIR }}/clang \
-                      CROSS_COMPILE=${{ env.NEUTRON_DIR }}/aarch64-linux-gnu- \
-                      CROSS_COMPILE_COMPAT=${{ env.NEUTRON_DIR }}/arm-linux-gnueabi- \
-                      LD=${{ env.NEUTRON_DIR }}/ld.lld \
-                      AR=${{ env.NEUTRON_DIR }}/llvm-ar \
-                      NM=${{ env.NEUTRON_DIR }}/llvm-nm \
-                      STRIP=${{ env.NEUTRON_DIR }}/llvm-strip \
-                      OBJCOPY=${{ env.NEUTRON_DIR }}/llvm-objcopy \
-                      OBJDUMP=${{ env.NEUTRON_DIR }}/llvm-objdump \
-                      READELF=${{ env.NEUTRON_DIR }}/llvm-readelf \
-                      HOSTCXX=${{ env.NEUTRON_DIR }}/clang++ \
-                      HOSTAR=${{ env.NEUTRON_DIR }}/llvm-ar \
-                      HOSTLD=${{ env.NEUTRON_DIR }}/ld.lld \
-                      HOSTCC=${{ env.NEUTRON_DIR }}/clang \
+                      CC=${{ env.CLANG_DIR }}/clang \
+                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/aarch64-buildroot-linux-gnu \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-buildroot-linux-gnu \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/arm-linux-androideabi- \
+                      LD=${{ env.CLANG_DIR }}/ld.lld \
+                      AR=${{ env.CLANG_DIR }}/llvm-ar \
+                      NM=${{ env.CLANG_DIR }}/llvm-nm \
+                      STRIP=${{ env.CLANG_DIR }}/llvm-strip \
+                      OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
+                      OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
+                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
                       LLVM=1 \
                       LLVM_IAS=1
 
