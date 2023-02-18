@@ -35,7 +35,9 @@ jobs:
     - name: Download Compiler - ZyCromerZ
       run: |
         mkdir clang
-        wget -q https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230218-release/Clang-17.0.0-20230218.tar.gz -O clang.tar.gz
+        wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-link.txt
+        LINK=$(cat 'Clang-main-link.txt')
+        wget -q $LINK -O clang.tar.gz
         tar -C clang/ -zxf clang.tar.gz
 
     - name: Download Compiler - Snapdragon LLVM
