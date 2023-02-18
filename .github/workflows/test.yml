@@ -136,6 +136,7 @@ jobs:
     - name: Make Anykernel for the kernel
       run: |
         cd android-kernel
+		    find ${KERNEL_DIR}/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >${KERNEL_DIR}/out/arch/arm64/boot/dtb
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         echo "FINAL_ZINAME="Kyr0SU-AOSP-${TIME}"" >> $GITHUB_ENV
         cp -fp ${{ env.ZIMAGE_DIR }}/Image.gz ${{ env.ANYKERNEL_DIR }}
