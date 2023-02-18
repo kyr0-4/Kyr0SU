@@ -39,6 +39,10 @@ jobs:
         repository: PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9
         ref: thirteen
         path: gcc-arm
+        
+    - name: Download Compiler - Snapdragon LLVM
+      run: |
+        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
 
     - name: Variables
       run: |
@@ -70,25 +74,25 @@ jobs:
       run: |
         cd android-kernel
         make O=out clean
-        make O=out ARCH=arm64 CC=$(CLAN_DIR)/clang $KERNEL_DEFCONFIG
+        make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang ${{ env.KERNEL_DEFCONFIG }}
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
-                      CC=${CLAN_DIR}/clang \
-                      CLANG_TRIPLE=${GCC_ARM64_DIR}/aarch64-linux-gnu- \
-                      CROSS_COMPILE=${GCC_ARM64_DIR}/aarch64-linux-android- \
-                      CROSS_COMPILE_ARM32=${GCC_ARM_DIR}/arm-linux-androideabi- \
-                      LD=${CLAN_DIR}/ld.lld \
-                      AR=${CLAN_DIR}/llvm-ar \
-                      NM=${CLAN_DIR}/llvm-nm \
-                      STRIP=${CLAN_DIR}/llvm-strip \
-                      OBJCOPY=${CLAN_DIR}/llvm-objcopy \
-                      OBJDUMP=${CLAN_DIR}/llvm-objdump \
-                      READELF=${CLAN_DIR}/llvm-readelf \
-                      HOSTCXX=${CLAN_DIR}/clang++ \
-                      HOSTAR=${CLAN_DIR}/llvm-ar \
-                      HOSTLD=${CLAN_DIR}/ld.lld \
-                      HOSTCC=${CLAN_DIR}/clang \
+                      CC=${{ env.CLANG_DIR }}/clang \
+                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-linux-android- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/arm-linux-androideabi- \
+                      LD=${{ env.CLANG_DIR }}/ld.lld \
+                      AR=${{ env.CLANG_DIR }}/llvm-ar \
+                      NM=${{ env.CLANG_DIR }}/llvm-nm \
+                      STRIP=${{ env.CLANG_DIR }}/llvm-strip \
+                      OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
+                      OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
+                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
+                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
+                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
+                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
+                      HOSTCC=${{ env.CLANG_DIR }}/clang \
                       LLVM=1 \
                       LLVM_IAS=1 \
                       HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
