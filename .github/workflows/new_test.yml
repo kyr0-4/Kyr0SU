@@ -23,6 +23,14 @@ jobs:
         repository: EmanuelCN/kernel_xiaomi_sm8250
         ref: staging
         path: android-kernel
+
+    - name: Checkout AnyKernel
+      uses: actions/checkout@v3
+      with:
+        github-server-url: 'https://github.com'
+        repository: kyr0-4/kyr0SU
+        ref: main
+        path: anykernel
         
     - name: Download Compiler - ZyCromerZ
       run: |
@@ -30,10 +38,15 @@ jobs:
         wget -q https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230218-release/Clang-17.0.0-20230218.tar.gz -O clang.tar.gz
         tar -C clang/ -zxf clang.tar.gz
 
+    - name: Download Compiler - Snapdragon LLVM
+      run: |
+        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
+
     - name: Variables
       run: |
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
-        echo "CLANG_DIR=$GITHUB_WORKSPACE/clang/bin" >> $GITHUB_ENV
+        echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
+        echo "ZYC_DIR=$GITHUB_WORKSPACE/clang/bin" >> $GITHUB_ENV
         echo "GCC_ARM64_DIR=$GITHUB_WORKSPACE/gcc-arm64/bin" >> $GITHUB_ENV
         echo "GCC_ARM_DIR=$GITHUB_WORKSPACE/gcc-arm/bin" >> $GITHUB_ENV
         echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
@@ -61,8 +74,8 @@ jobs:
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/clang \
-                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
-                      CROSS_COMPILE_COMPAT=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      CROSS_COMPILE=${{ env.ZYC_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE_COMPAT=${{ env.ZYC_DIR }}/arm-linux-gnueabi- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
