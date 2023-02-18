@@ -5,11 +5,11 @@ on:
     - cron:  '20 22 * * 1,3,5'
   workflow_dispatch:
 
-  
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    
     - name: Checkout Kernel Source Code
       uses: actions/checkout@v3
       with:
@@ -34,7 +34,7 @@ jobs:
         ref: thirteen
         path: gcc-arm64
 
-   - name: Checkout GCC-ARM
+    - name: Checkout GCC-ARM
       uses: actions/checkout@v3
       with:
         github-server-url: 'https://github.com'
