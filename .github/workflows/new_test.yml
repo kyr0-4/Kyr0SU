@@ -38,18 +38,14 @@ jobs:
         repository: PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9
         ref: thirteen
         path: gcc-arm
-        
-    - name: Download Compiler - Snapdragon LLVM
-      run: |
-        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
 
     - name: Variables
       run: |
-        KERNEL_DIR=$(pwd)/android-kernel
-        CLANG_DIR=$(pwd)/snapdragon-clang/bin
-        GCC_ARM64_DIR=$(pwd)/gcc-arm64/bin
-        GCC_ARM_DIR=$(pwd)/gcc-arm/bin
-        ZIMAGE_DIR=${KERNEL_DIR}/out/arch/arm64/boot
+        KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel
+        CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin
+        GCC_ARM64_DIR=$GITHUB_WORKSPACE/gcc-arm64/bin
+        GCC_ARM_DIR=$GITHUB_WORKSPACE/gcc-arm/bin
+        ZIMAGE_DIR=$(KERNEL_DIR)/out/arch/arm64/boot
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
@@ -60,7 +56,7 @@ jobs:
 
     - name: Fix:Makefile:Properly disable Unknown Warning Option
       run: |
-        sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "${KERNEL_DIR}/Makefile"
+        sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "$(KERNEL_DIR)/Makefile"
 
     - name: Apply KernelSU
       run: |
@@ -73,47 +69,47 @@ jobs:
       run: |
         cd ${KERNEL_DIR}
         make O=out clean
-        make O=out ARCH=arm64 CC=${CLAN_DIR}/clang $KERNEL_DEFCONFIG
+        make O=out ARCH=arm64 CC=$(CLAN_DIR)/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
-                      CC=${CLAN_DIR}/clang \
-                      CLANG_TRIPLE=${GCC_ARM64_DIR}/aarch64-linux-gnu- \
-                      CROSS_COMPILE=${GCC_ARM64_DIR}/aarch64-linux-android- \
-                      CROSS_COMPILE_ARM32=${GCC_ARM_DIR}/arm-linux-androideabi- \
-                      LD=${CLAN_DIR}/ld.lld \
-                      AR=${CLAN_DIR}/llvm-ar \
-                      NM=${CLAN_DIR}/llvm-nm \
-                      STRIP=${CLAN_DIR}/llvm-strip \
-                      OBJCOPY=${CLAN_DIR}/llvm-objcopy \
-                      OBJDUMP=${CLAN_DIR}/llvm-objdump \
-                      READELF=${CLAN_DIR}/llvm-readelf \
-                      HOSTCXX=${CLAN_DIR}/clang++ \
-                      HOSTAR=${CLAN_DIR}/llvm-ar \
-                      HOSTLD=${CLAN_DIR}/ld.lld \
-                      HOSTCC=${CLAN_DIR}/clang \
+                      CC=$(CLAN_DIR)/clang \
+                      CLANG_TRIPLE=$(GCC_ARM64_DIR)/aarch64-linux-gnu- \
+                      CROSS_COMPILE=$(GCC_ARM64_DIR)/aarch64-linux-android- \
+                      CROSS_COMPILE_ARM32=$(GCC_ARM_DIR)/arm-linux-androideabi- \
+                      LD=$(CLAN_DIR)/ld.lld \
+                      AR=$(CLAN_DIR)/llvm-ar \
+                      NM=$(CLAN_DIR)/llvm-nm \
+                      STRIP=$(CLAN_DIR)/llvm-strip \
+                      OBJCOPY=$(CLAN_DIR)/llvm-objcopy \
+                      OBJDUMP=$(CLAN_DIR)/llvm-objdump \
+                      READELF=$(CLAN_DIR)/llvm-readelf \
+                      HOSTCXX=$(CLAN_DIR)/clang++ \
+                      HOSTAR=$(CLAN_DIR)/llvm-ar \
+                      HOSTLD=$(CLAN_DIR)/ld.lld \
+                      HOSTCC=$(CLAN_DIR)/clang \
                       LLVM=1 \
                       LLVM_IAS=1 \
                       HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
 
     - name: generate dtb
       run: |
-        find ${KERNEL_DIR}/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >${KERNEL_DIR}/out/arch/arm64/boot/dtb
+        find $(KERNEL_DIR)/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >$(KERNEL_DIR)/out/arch/arm64/boot/dtb
 
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
       with:
         name: Image.gz
-        path: ${ZIMAGE_DIR}/Image.gz
+        path: $(ZIMAGE_DIR)/Image.gz
 
     - name: Upload DTBO image
       uses: actions/upload-artifact@v3
       with:
         name: dtbo
-        path: ${ZIMAGE_DIR}/dtbo.img
+        path: $(ZIMAGE_DIR)/dtbo.img
 
     - name: Upload DTB image
       uses: actions/upload-artifact@v3
       with:
         name: dtb
-        path: ${ZIMAGE_DIR}/dtb
+        path: $(ZIMAGE_DIR)/dtb
