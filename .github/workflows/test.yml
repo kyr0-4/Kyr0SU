@@ -113,13 +113,12 @@ jobs:
                       OBJCOPY=${{ env.CLANG_DIR }}/bin/llvm-objcopy \
                       OBJDUMP=${{ env.CLANG_DIR }}/bin/llvm-objdump \
                       READELF=${{ env.CLANG_DIR }}/bin/llvm-readelf \
-                      HOSTCXX=${{ env.CLANG_DIR }}/bin/clang++
-                      HOSTAR=${{ env.CLANG_DIR }}/bin/llvm-ar
-                      HOSTLD=${{ env.CLANG_DIR }}/bin/ld.lld
+                      HOSTCXX=${{ env.CLANG_DIR }}/bin/clang++ \
+                      HOSTAR=${{ env.CLANG_DIR }}/bin/llvm-ar \
+                      HOSTLD=${{ env.CLANG_DIR }}/bin/ld.lld \
                       HOSTCC=${{ env.CLANG_DIR }}/bin/clang \
                       LLVM=1 \
-                      LLVM_IAS=1 \
-                      HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
+                      LLVM_IAS=1 
     
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
