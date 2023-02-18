@@ -37,7 +37,7 @@ jobs:
         mkdir clang
         wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-link.txt
         LINK=$(cat 'Clang-main-link.txt')
-        wget -q $LINK -O clang.tar.gz
+        wget -q ${LINK} -O clang.tar.gz
         tar -C clang/ -zxf clang.tar.gz
 
     - name: Download Compiler - Snapdragon LLVM
