@@ -50,7 +50,7 @@ jobs:
         echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
         echo "GCC_ARM64_DIR=$GITHUB_WORKSPACE/gcc-arm64/bin" >> $GITHUB_ENV
         echo "GCC_ARM_DIR=$GITHUB_WORKSPACE/gcc-arm/bin" >> $GITHUB_ENV
-        echo "ZIMAGE_DIR=${{ env.KERNEL_DIR }}/out/arch/arm64/boot" >> $GITHUB_ENV
+        echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
         echo "TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")" >> $GITHUB_ENV
         echo "DEVICE=alioth" >> $GITHUB_ENV
         echo "ZIPNAME=Kyr0SU" >> $GITHUB_ENV
