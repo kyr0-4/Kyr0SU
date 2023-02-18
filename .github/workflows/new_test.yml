@@ -61,16 +61,16 @@ jobs:
 
     - name: Apply KernelSU
       run: |
-        cd ${KERNEL_DIR}
+        cd $KERNEL_DIR
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
         git apply ./KernelSU.patch
 
     - name: Build kernel
       run: |
-        cd ${KERNEL_DIR}
+        cd $KERNEL_DIR
         make O=out clean
-        make O=out ARCH=arm64 CC=${CLAN_DIR}/clang $KERNEL_DEFCONFIG
+        make O=out ARCH=arm64 CC=$KERNEL_DIR/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
