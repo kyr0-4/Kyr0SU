@@ -87,15 +87,18 @@ jobs:
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/clang \
-                      CLANG_TRIPLE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
-                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-android-
+                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-linux-android- \
+                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/arm-linux-androideabi- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
                       STRIP=${{ env.CLANG_DIR }}/llvm-strip \
                       OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
                       OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
-                      READELF=${{ env.CLANG_DIR }}/llvm-readelf
+                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
+                      LLVM=1 \
+                      LLVM_IAS=1
 
     - name: generate dtb
       run: |
