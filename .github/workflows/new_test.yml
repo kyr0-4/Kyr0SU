@@ -38,10 +38,6 @@ jobs:
         repository: PixelExperience/prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9
         ref: thirteen
         path: gcc-arm
-        
-    - name: Download Compiler - Snapdragon LLVM
-      run: |
-        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
 
     - name: Variables
       run: |
