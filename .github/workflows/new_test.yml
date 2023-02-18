@@ -100,7 +100,7 @@ jobs:
                       HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
-                      HOSTCC=${{ env.CLANG_DIR }}/clang \
+                      HOSTCC=${{ env.CLANG_DIR }}/clang
 
     - name: generate dtb
       run: |
