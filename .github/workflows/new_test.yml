@@ -68,7 +68,7 @@ jobs:
 
     - name: Build kernel
       run: |
-        cd ${{ env.KERNEL_DIR }}
+        cd $KERNEL_DIR
         make O=out clean
         make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
