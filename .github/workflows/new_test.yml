@@ -27,9 +27,7 @@ jobs:
     - name: Download Compiler - ZyCromerZ
       run: |
         mkdir clang
-        wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-lastbuild.txt
-        V="$(cat Clang-main-lastbuild.txt)"
-        wget -q https://github.com/ZyCromerZ/Clang/releases/download/16.0.0-$V-release/Clang-17.0.0-$V.tar.gz -O clang.tar.gz
+        wget -q https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230218-release/Clang-17.0.0-20230218.tar.gz -O clang.tar.gz
         tar -C clang/ -zxf clang.tar.gz
 
     - name: Variables
