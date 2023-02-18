@@ -55,6 +55,10 @@ jobs:
         DEVICE=alioth
         ZIPNAME=Kyr0SU
         echo "FINAL_ZIP=${ZIPNAME}-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
+        
+    - name: Fix:Makefile:Properly disable Unknown Warning Option
+      run: |
+        sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "android-kernel/Makefile"
 
     - name: Apply KernelSU
       run: |
