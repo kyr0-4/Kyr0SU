@@ -42,14 +42,16 @@ jobs:
         wget -q https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-linux-gnueabihf.tar.xz -O gcc-arm.tar.xz
         tar -xf gcc-arm.tar.xz
 
-    - name: Download Compiler - Snapdragon LLVM
+    - name: Download Compiler - Neutron clang
       run: |
-        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
+        mkdir clang
+        cd clang
+        bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S
 
     - name: Variables
       run: |
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
-        echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
+        echo "CLANG_DIR=$GITHUB_WORKSPACE/clang/bin" >> $GITHUB_ENV
         echo "GCC_ARM64_DIR=$GITHUB_WORKSPACE/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-linux-gnu/bin" >> $GITHUB_ENV
         echo "GCC_ARM_DIR=$GITHUB_WORKSPACE/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-linux-gnueabihf/bin" >> $GITHUB_ENV
         echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
