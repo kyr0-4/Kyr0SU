@@ -73,16 +73,13 @@ jobs:
     - name: Build kernel
       run: |
         cd android-kernel
-        PATH=${{ env.CLANG_DIR }}
+        PATH=${{ env.CLANG_DIR }}$PATH
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
         make O=out clean
         make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
-        make -j$(nproc --all) \
-                      O=out \
-                      ARCH=arm64 \
-                      LLVM=1
+        make -j$(nproc --all) O=out ARCH=arm64 LLVM=1
 
     - name: generate dtb
       run: |
