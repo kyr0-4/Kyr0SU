@@ -32,14 +32,14 @@ jobs:
         ref: main
         path: anykernel
 
-     - name: Download Compiler - Arm GNU Toolchain
+    - name: Download Compiler - Arm GNU Toolchain
       run: |
         mkdir gcc-arm64
         cd gcc-arm64
         wget -q https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64_be-none-linux-gnu.tar.xz -O gcc-arm64.tar.xz
         tar -xf gcc-arm64.tar.xz
 
-     - name: Download Compiler - Arm GNU Toolchain
+    - name: Download Compiler - Arm GNU Toolchain
       run: |
         mkdir gcc-arm
         cd gcc-arm
