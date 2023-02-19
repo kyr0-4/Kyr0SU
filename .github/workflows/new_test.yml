@@ -52,7 +52,7 @@ jobs:
         DEVICE=alioth
         ZIPNAME=Kyr0SU
         echo "FINAL_ZIP=${ZIPNAME}-RK-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
-        sed -i 's/CONFIG_LOCALVERSION="-~RealKing//v9.8-Metallic"/CONFIG_LOCALVERSION="-Kyr0SU-RK"/g' "android-kernel/arch/arm64/configs/vendor/alioth_defconfig"
+        sed -i 's/CONFIG_LOCALVERSION="~RealKing//v9.8-Metallic"/CONFIG_LOCALVERSION="-Kyr0SU-RK"/g' "android-kernel/arch/arm64/configs/vendor/alioth_defconfig"
 
     - name: Apply KernelSU
       run: |
