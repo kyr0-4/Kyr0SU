@@ -1,4 +1,4 @@
-name: Build Kernel kyr0SU for Alioth (EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)
+name: kyr0SU for Alioth (Nexus_kernel+KernelSU+Snapdragon LLVM 16.0.3)
 
 on: 
   schedule:
@@ -57,7 +57,8 @@ jobs:
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         DEVICE=alioth
         ZIPNAME=Kyr0SU
-        echo "FINAL_ZIP=${ZIPNAME}-N0kernel-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
+        echo "FINAL_ZIP=${ZIPNAME}-Nexus-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
+        sed -i 's/CONFIG_LOCALVERSION="-Nexus-alioth-v14"/CONFIG_LOCALVERSION="-Kyr0SU-Nexus"/g' "android-kernel/arch/arm64/configs/alioth_defconfig"
 
     - name: Fix:Makefile:Properly disable Unknown Warning Option
       run: |
@@ -103,7 +104,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Image.gz
-        path: ${{ env.ZIMAGE_DIR }}/Image.gz
+        path: ${{ env.ZIMAGE_DIR }}/Image
 
     - name: Upload DTBO image
       uses: actions/upload-artifact@v3
@@ -119,7 +120,7 @@ jobs:
 
     - name: Make Anykernel for the kernel
       run: |
-        cp -fp ${{ env.ZIMAGE_DIR }}/Image.gz ${{ env.ANYKERNEL_DIR }}
+        cp -fp ${{ env.ZIMAGE_DIR }}/Image ${{ env.ANYKERNEL_DIR }}
         cp -fp ${{ env.ZIMAGE_DIR }}/dtbo.img ${{ env.ANYKERNEL_DIR }}
         cp -fp ${{ env.ZIMAGE_DIR }}/dtb ${{ env.ANYKERNEL_DIR }}
         
