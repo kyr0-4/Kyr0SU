@@ -1,4 +1,4 @@
-name: Build Kernel kyr0SU for Alioth (Realking_kernel+KernelSU+ZyC Clang)
+name: Build Kernel kyr0SU for Alioth (EmanuelCN_kernel+KernelSU+Snapdragon LLVM 16.0.3)
 
 on: 
   schedule:
@@ -20,8 +20,8 @@ jobs:
       uses: actions/checkout@v3
       with:
         github-server-url: 'https://github.com'
-        repository: Rohail33/Realking_xiaomi_sm8250
-        ref: T
+        repository: EmanuelCN/kernel_xiaomi_sm8250
+        ref: staging
         path: android-kernel
         
     - name: Checkout AnyKernel
@@ -32,18 +32,24 @@ jobs:
         ref: main
         path: anykernel
 
-    - name: Download Compiler - ZyCromerZ
+    - name: Download Compiler - Arm GNU Toolchain
       run: |
-        mkdir clang
-        wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-link.txt
-        LINK=$(cat 'Clang-main-link.txt')
-        wget -q ${LINK} -O clang.tar.gz
-        tar -C clang/ -zxf clang.tar.gz
+        wget -q https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64_be-none-linux-gnu.tar.xz -O gcc-arm64.tar.xz
+        tar -xf gcc-arm64.tar.xz
+
+    - name: Download Compiler - Arm GNU Toolchain
+      run: |
+        wget -q https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-linux-gnueabihf.tar.xz -O gcc-arm.tar.xz
+        tar -xf gcc-arm.tar.xz
+
+    - name: Download Compiler - Snapdragon LLVM
+      run: |
+        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
 
     - name: Variables
       run: |
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
-        echo "CLANG_DIR=$GITHUB_WORKSPACE/clang/bin" >> $GITHUB_ENV
+        echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
         echo "GCC_ARM64_DIR=$GITHUB_WORKSPACE/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-linux-gnu/bin" >> $GITHUB_ENV
         echo "GCC_ARM_DIR=$GITHUB_WORKSPACE/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-linux-gnueabihf/bin" >> $GITHUB_ENV
         echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
@@ -51,7 +57,12 @@ jobs:
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         DEVICE=alioth
         ZIPNAME=Kyr0SU
-        echo "FINAL_ZIP=${ZIPNAME}-RK-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
+        echo "FINAL_ZIP=${ZIPNAME}-N0kernel-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
+        sed -i 's/CONFIG_LOCALVERSION="-N0kernel"/CONFIG_LOCALVERSION="-Kyr0SU-N0kernel"/g' "android-kernel/arch/arm64/configs/vendor/alioth_defconfig"
+
+    - name: Fix:Makefile:Properly disable Unknown Warning Option
+      run: |
+        sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "android-kernel/Makefile"
 
     - name: Apply KernelSU
       run: |
@@ -72,9 +83,9 @@ jobs:
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/clang \
-                      CLANG_TRIPLE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
-                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
-                      CROSS_COMPILE_COMPAT=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/aarch64-none-linux-gnu- \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-none-linux-gnu- \
+                      CROSS_COMPILE_COMPAT=${{ env.GCC_ARM_DIR }}/arm-none-linux-gnueabihf- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
