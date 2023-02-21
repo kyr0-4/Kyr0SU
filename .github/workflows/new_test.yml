@@ -74,6 +74,7 @@ jobs:
     - name: Build kernel
       run: |
         cd android-kernel
+        export PATH=$PATH:${{ env.CLANG_DIR }}
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
