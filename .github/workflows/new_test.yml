@@ -136,7 +136,7 @@ jobs:
                       -d PANIC_ON_RT_THROTTLING \
                       -d PANIC_ON_REFCOUNT_ERROR \
                       -d EDAC_KRYO_ARM64_PANIC_ON_UE \
-                      -d EDAC_QCOM_LLCC_PANIC_ON_UE \
+                      -d EDAC_QCOM_LLCC_PANIC_ON_UE
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
@@ -156,7 +156,7 @@ jobs:
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
                       LLVM=1 \
-                      LLVM_IAS=1 \
+                      LLVM_IAS=1
 
     - name: generate dtb
       run: |
