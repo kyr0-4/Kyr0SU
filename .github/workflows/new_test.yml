@@ -71,7 +71,7 @@ jobs:
         SUBARCH=arm64
         make O=out ARCH=arm64 clean
         make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
-        scripts/config --file out/.config \
+        scripts/config --keep-case --file out/.config \
                       -d CONFIG_CGROUP_DEBUG \
                       -d CONFIG_CMA_DEBUGFS \
                       -d CONFIG_PM_DEBUG \
