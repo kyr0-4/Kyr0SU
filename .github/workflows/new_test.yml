@@ -20,8 +20,8 @@ jobs:
       uses: actions/checkout@v3
       with:
         github-server-url: 'https://github.com'
-        repository: EmanuelCN/kernel_xiaomi_sm8250
-        ref: staging
+        repository: StatiXOS/android_kernel_xiaomi_sm8250
+        ref: tm
         path: android-kernel
         
     - name: Checkout AnyKernel
@@ -69,74 +69,8 @@ jobs:
         KERNEL_DEFCONFIG=vendor/alioth_defconfig
         ARCH=arm64
         SUBARCH=arm64
-        make O=out ARCH=arm64 clean
+        make O=out clean
         make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
-        scripts/config --keep-case --file out/.config \
-                      -d CONFIG_CGROUP_DEBUG \
-                      -d CONFIG_CMA_DEBUGFS \
-                      -d CONFIG_PM_DEBUG \
-                      -d CONFIG_DEBUG_PAGEALLOC \
-                      -d CONFIG_SLUB_DEBUG_PANIC_ON \
-                      -d CONFIG_DEBUG_PAGEALLOC_ENABLE_DEFAULT \
-                      -d CONFIG_DEBUG_OBJECTS \
-                      -d CONFIG_DEBUG_OBJECTS_FREE \
-                      -d CONFIG_DEBUG_OBJECTS_TIMERS \
-                      -d CONFIG_DEBUG_OBJECTS_WORK \
-                      -d CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER \
-                      -d CONFIG_DEBUG_KMEMLEAK \
-                      -d CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF \
-                      -d CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE \
-                      -d CONFIG_DEBUG_STACK_USAGE \
-                      -d CONFIG_DEBUG_SPINLOCK \
-                      -d CONFIG_DEBUG_MUTEXES \
-                      -d CONFIG_DEBUG_ATOMIC_SLEEP \
-                      -d CONFIG_DEBUG_SG \
-                      -d CONFIG_DEBUG_NOTIFIERS \
-                      -d CONFIG_DEBUG_CREDENTIALS \
-                      -d CONFIG_LOCK_TORTURE_TEST \
-                      -d CONFIG_RCU_TORTURE_TEST \
-                      -d CONFIG_FAULT_INJECTION \
-                      -d CONFIG_FAIL_PAGE_ALLOC \
-                      -d CONFIG_FAULT_INJECTION_STACKTRACE_FILTER \
-                      -d CONFIG_DEBUG_SECTION_MISMATCH \
-                      -d CONFIG_DEBUG_MEMORY_INIT \
-                      -d CONFIG_RMNET_DATA_DEBUG_PKT \
-                      -d CONFIG_ESOC_DEBUG \
-                      -d CONFIG_FHANDLE \
-                      -d CONFIG_RD_BZIP2 \
-                      -d CONFIG_RD_LZMA \
-                      -d CONFIG_SYSFS_SYSCALL \
-                      -d CONFIG_SLAB_FREELIST_RANDOM \
-                      -d CONFIG_SLAB_FREELIST_HARDENED \
-                      -d CONFIG_CMA_DEBUGFS \
-                      -e CONFIG_HARDEN_BRANCH_PREDICTOR \
-                      -d CONFIG_EFI \
-                      -d CONFIG_L2TP_DEBUGFS \
-                      -d CONFIG_REGMAP_ALLOW_WRITE_DEBUGFS \
-                      -d CONFIG_CORESIGHT \
-                      -d CONFIG_PAGE_POISONING \
-                      -d CONFIG_QCOM_RTB \
-                      -d CONFIG_BLK_DEV_IO_TRACE \
-                      -d CONFIG_PREEMPTIRQ_EVENTS \
-                      -d CONFIG_PREEMPT_TRACER \
-                      -d CONFIG_IRQSOFF_TRACER \
-                      -d CONFIG_PAGE_OWNER \
-                      -d CONFIG_DRM_SDE_EVTLOG_DEBUG \
-                      -d CONFIG_DRM_MSM_REGISTER_LOGGING \
-                      -d CONFIG_MSM_SDE_ROTATOR_EVTLOG_DEBUG \
-                      -d CONFIG_VIDEO_ADV_DEBUG \
-                      -d CONFIG_IPU_DEBUG \
-                      -d CONFIG_SPMI_MSM_PMIC_ARB_DEBUG \
-                      -d CONFIG_WQ_WATCHDOG \
-                      -d CONFIG_SCHED_STACK_END_CHECK \
-                      -d CONFIG_LOCKUP_DETECTOR \
-                      -d CONFIG_SOFTLOCKUP_DETECTOR \
-                      -d CONFIG_MHI_DEBUG \
-                      -d CONFIG_PANIC_ON_SCHED_BUG \
-                      -d CONFIG_PANIC_ON_RT_THROTTLING \
-                      -d CONFIG_PANIC_ON_REFCOUNT_ERROR \
-                      -d CONFIG_EDAC_KRYO_ARM64_PANIC_ON_UE \
-                      -d CONFIG_EDAC_QCOM_LLCC_PANIC_ON_UE \
         make -j$(nproc --all) \
                       O=out \
                       ARCH=arm64 \
@@ -156,7 +90,7 @@ jobs:
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
                       LLVM=1 \
-                      LLVM_IAS=1 
+                      LLVM_IAS=1 \
 
     - name: generate dtb
       run: |
