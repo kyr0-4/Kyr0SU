@@ -32,21 +32,13 @@ jobs:
         ref: main
         path: anykernel
         
-    - name: Checkout AnyKernel
+    - name: Checkout aarch64-zyc-linux-gnu
       uses: actions/checkout@v3
       with:
         github-server-url: 'https://github.com'
         repository: kyr0-4/kyr0SU
         ref: 13
         path: aarch64-zyc-linux-gnu
-
-    - name: Download Compiler - aarch64-zyc-linux-gnu
-      run: |
-        mkdir ZyC
-        wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-link.txt
-        LINK=$(cat 'Clang-main-link.txt')
-        wget -q ${LINK} -O clang.tar.gz
-        tar -C ZyC/ -zxf clang.tar.gz
 
     - name: Download Compiler - Snapdragon LLVM
       run: |
