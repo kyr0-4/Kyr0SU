@@ -73,6 +73,7 @@ jobs:
         make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
+                      dtbo.img \
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
