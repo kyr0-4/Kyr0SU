@@ -64,13 +64,17 @@ jobs:
     - name: Build kernel
       run: |
         cd android-kernel
-        KERNEL_DEFCONFIG=vendor/xiaomi/alioth_config
+        KERNEL_DEFCONFIG=vendor/kona-perf_defconfig
+        sm8250_DEFCONFIG=vendor/xiaomi/sm8250-common.config
+        alioth_DEFCONFIG=vendor/xiaomi/alioth.config
         export ARCH="arm64"
         export SUBARCH="arm64"
         export CFLAGS="-march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -O3"
         export LLVMFLAGS="-mllvm -polly -flto=full -O3"
         make O=out clean
         make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
+        make O=out CC=${{ env.CLANG_DIR }}/clang $sm8250_DEFCONFIG
+        make O=out CC=${{ env.CLANG_DIR }}/clang $alioth_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
