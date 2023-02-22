@@ -108,7 +108,6 @@ jobs:
                       LLVM=1 \
                       LLVM_IAS=1 \
                       
-    
     - name: generate dtb
       run: |
         find ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtb
