@@ -31,8 +31,16 @@ jobs:
         repository: kyr0-4/kyr0SU
         ref: main
         path: anykernel
+        
+    - name: Checkout AnyKernel
+      uses: actions/checkout@v3
+      with:
+        github-server-url: 'https://github.com'
+        repository: kyr0-4/kyr0SU
+        ref: 13
+        path: aarch64-zyc-linux-gnu
 
-    - name: Download Compiler - ZyCromerZ
+    - name: Download Compiler - aarch64-zyc-linux-gnu
       run: |
         mkdir ZyC
         wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-link.txt
@@ -48,7 +56,7 @@ jobs:
       run: |
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
         echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
-        echo "ZyC_DIR=$GITHUB_WORKSPACE/ZyC/bin" >> $GITHUB_ENV
+        echo "ZyC_DIR=$GITHUB_WORKSPACE/aarch64-zyc-linux-gnu/bin" >> $GITHUB_ENV
         echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
         echo "ANYKERNEL_DIR=$GITHUB_WORKSPACE/anykernel/anykernel" >> $GITHUB_ENV
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
@@ -78,6 +86,7 @@ jobs:
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/clang \
+                      CROSS_COMPILE=${{ env.ZyC_DIR }}/aarch64-zyc-linux-gnu- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
