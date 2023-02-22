@@ -97,7 +97,7 @@ jobs:
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
       with:
-        name: Image.gz
+        name: Image
         path: ${{ env.ZIMAGE_DIR }}/Image
 
     - name: Upload DTBO image
