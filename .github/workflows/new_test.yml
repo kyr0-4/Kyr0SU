@@ -62,7 +62,7 @@ jobs:
        mv anykernel/arch/arm64/Makefile android-kernel/arch/arm64
        mv anykernel/arch/arm64/boot/Makefile android-kernel/arch/arm64/boot
        mv anykernel/scripts/Makefile.lib android-kernel/scripts
-       echo CONFIG_BUILD_ARM64_DT_OVERLAY=y >> android-kernelarch/arm64/configs/alioth_defconfig
+       echo CONFIG_BUILD_ARM64_DT_OVERLAY=y >> android-kernel/arch/arm64/configs/alioth_defconfig
     
     - name: Apply KernelSU
       run: |
