@@ -79,7 +79,6 @@ jobs:
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.ZyC_DIR }}/aarch64-linux-gnu- \
-                      CROSS_COMPILE_COMPAT=${{ env.ZyC_DIR }}/arm-linux-gnueabi- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
