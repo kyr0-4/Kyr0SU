@@ -74,14 +74,14 @@ jobs:
       run: |
         cd android-kernel
         KERNEL_DEFCONFIG=vendor/arrow_alioth_defconfig
-        ARCH=arm64
-        SUBARCH=arm64
-        export CLANG_FLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly"
+        export ARCH="arm64"
+        export SUBARCH="arm64"
+        export CFLAGS="-march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno"
+        export LLVMFLAGS="-mllvm -polly"
         make O=out clean
-        make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
+        make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
-                      ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.ZyC_DIR }}/aarch64-zyc-linux-gnu- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
@@ -92,8 +92,7 @@ jobs:
                       OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
                       LLVM=1 \
-                      LLVM_IAS=1 \
-                      CLANG_FLAGS="$CLANG_FLAGS"
+                      LLVM_IAS=1
 
     - name: generate dtb
       run: |
