@@ -15,7 +15,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install libncurses-dev libtinfo5 git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3
-
     - name: Checkout Kernel Source Code
       uses: actions/checkout@v3
       with:
@@ -32,25 +31,21 @@ jobs:
         ref: main
         path: anykernel
         
-    - name: Checkout aarch64-zyc-linux-gnu
-      uses: actions/checkout@v3
-      with:
-        github-server-url: 'https://github.com'
-        repository: ZyCromerZ/aarch64-zyc-linux-gnu
-        ref: 13
-        path: aarch64-zyc-linux-gnu
-
-    - name: Download Compiler - Snapdragon LLVM
+    - name: Download Compiler - ZyCromerZ
       run: |
-        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
+        mkdir clang
+        wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-link.txt
+        LINK=$(cat 'Clang-main-link.txt')
+        wget -q ${LINK} -O clang.tar.gz
+        tar -C clang/ -zxf clang.tar.gz
 
     - name: Variables
       run: |
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
-        echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
-        echo "ZyC_DIR=$GITHUB_WORKSPACE/aarch64-zyc-linux-gnu/bin" >> $GITHUB_ENV
+        echo "CLANG_DIR=$GITHUB_WORKSPACE/clang/bin" >> $GITHUB_ENV
         echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
         echo "ANYKERNEL_DIR=$GITHUB_WORKSPACE/anykernel/anykernel" >> $GITHUB_ENV
+        #### Name
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         LOCALVERSION_LINE=$(grep "CONFIG_LOCALVERSION=" android-kernel/arch/arm64/configs/vendor/arrow_alioth_defconfig)
         LOCALVERSION_NEW='CONFIG_LOCALVERSION="-Kyr0SU-MiPa"'
@@ -58,32 +53,33 @@ jobs:
         ZIPNAME=Kyr0SU
         echo "FINAL_ZIP=${ZIPNAME}-MiPa-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
         sed -i "s/$LOCALVERSION_LINE/$LOCALVERSION_NEW/g" android-kernel/arch/arm64/configs/vendor/arrow_alioth_defconfig
-
+        #### CFLAGS
+        export ARCH="arm64"
+        export SUBARCH="arm64"
+        export CFLAGS="-march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -O3"
+        export LLVMFLAGS="-mllvm -polly -flto=full -O3"
+    
     - name: Fix:Makefile:Properly disable Unknown Warning Option
       run: |
         sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "android-kernel/Makefile"
-
+    
     - name: Apply KernelSU
       run: |
         cd android-kernel
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
         git apply KernelSU.patch
-
+    
     - name: Build kernel
       run: |
         cd android-kernel
         KERNEL_DEFCONFIG=vendor/arrow_alioth_defconfig
-        export ARCH="arm64"
-        export SUBARCH="arm64"
-        export CFLAGS="-march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -O3"
-        export LLVMFLAGS="-mllvm -polly -flto=full -O3"
         make O=out clean
         make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
-                      CROSS_COMPILE=${{ env.ZyC_DIR }}/aarch64-zyc-linux-gnu- \
+                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-zyc-linux-gnu- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
@@ -95,12 +91,12 @@ jobs:
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
                       LLVM=1 \
-                      LLVM_IAS=1
-
+                      LLVM_IAS=1 \
+    
     - name: generate dtb
       run: |
         find ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtb
-
+    
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
       with:
