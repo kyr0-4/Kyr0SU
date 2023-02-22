@@ -76,8 +76,9 @@ jobs:
         KERNEL_DEFCONFIG=vendor/arrow_alioth_defconfig
         export ARCH="arm64"
         export SUBARCH="arm64"
-        export CFLAGS="-march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno"
+        export CFLAGS="-march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -O3"
         export LLVMFLAGS="-mllvm -polly"
+        export LTO=thin
         make O=out clean
         make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
