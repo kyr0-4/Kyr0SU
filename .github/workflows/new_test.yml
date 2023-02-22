@@ -54,7 +54,7 @@ jobs:
         echo "FINAL_ZIP=${ZIPNAME}-Redline-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
         sed -i "s/$LOCALVERSION_LINE/$LOCALVERSION_NEW/g" android-kernel/arch/arm64/configs/alioth_defconfig
         
-    - name: Build kernel
+    - name: dtbo.img: build device tree overlay partition image
       run: |
        rm android-kernel/arch/arm64/Makefile
        rm android-kernel/arch/arm64/boot/Makefile
