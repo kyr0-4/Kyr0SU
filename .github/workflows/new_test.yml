@@ -32,11 +32,13 @@ jobs:
         ref: main
         path: anykernel
 
-    - name: Download Compiler - Neutron
+    - name: Download Compiler - ZyCromerZ
       run: |
-        mkdir neutron
-        cd neutron
-        bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S
+        mkdir ZyC
+        wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-link.txt
+        LINK=$(cat 'Clang-main-link.txt')
+        wget -q ${LINK} -O clang.tar.gz
+        tar -C ZyC/ -zxf clang.tar.gz
 
     - name: Download Compiler - Snapdragon LLVM
       run: |
@@ -77,9 +79,8 @@ jobs:
                       O=out \
                       ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/clang \
-                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/aarch64-linux-gnu- \
-                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-none-linux-gnu- \
-                      CROSS_COMPILE_COMPAT=${{ env.GCC_ARM_DIR }}/arm-linux-gnueabi- \
+                      CROSS_COMPILE=${{ env.ZyC_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE_COMPAT=${{ env.ZyC_DIR }}/arm-linux-gnueabi- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
@@ -88,7 +89,8 @@ jobs:
                       OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
                       LLVM=1 \
-                      LLVM_IAS=1
+                      LLVM_IAS=1 \
+                      HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
 
     - name: generate dtb
       run: |
@@ -98,7 +100,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Image.gz
-        path: ${{ env.ZIMAGE_DIR }}/Image.gz
+        path: ${{ env.ZIMAGE_DIR }}/Image
 
     - name: Upload DTBO image
       uses: actions/upload-artifact@v3
@@ -114,7 +116,7 @@ jobs:
 
     - name: Make Anykernel for the kernel
       run: |
-        cp -fp ${{ env.ZIMAGE_DIR }}/Image.gz ${{ env.ANYKERNEL_DIR }}
+        cp -fp ${{ env.ZIMAGE_DIR }}/Image ${{ env.ANYKERNEL_DIR }}
         cp -fp ${{ env.ZIMAGE_DIR }}/dtbo.img ${{ env.ANYKERNEL_DIR }}
         cp -fp ${{ env.ZIMAGE_DIR }}/dtb ${{ env.ANYKERNEL_DIR }}
         
