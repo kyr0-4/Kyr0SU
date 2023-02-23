@@ -57,11 +57,16 @@ jobs:
     - name: dtbo.img build device tree overlay partition image
       run: |
        rm android-kernel/arch/arm64/Makefile
+       rm android-kernel/arch/arm64/Kconfig
        rm android-kernel/arch/arm64/boot/Makefile
+       rm android-kernel/arch/arm64/boot/dts/Makefile
        rm android-kernel/scripts/Makefile.lib
        mv anykernel/arch/arm64/Makefile android-kernel/arch/arm64
+       mv anykernel/arch/arm64/Kconfig android-kernel/arch/arm64
        mv anykernel/arch/arm64/boot/Makefile android-kernel/arch/arm64/boot
+       mv anykernel/arch/arm64/boot/dts/Makefile android-kernel/arch/arm64/boot/dts
        mv anykernel/scripts/Makefile.lib android-kernel/scripts
+       mv anykernel/scripts/dtc/mkdtboimg.py  android-kernel/scripts/dtc
        echo CONFIG_BUILD_ARM64_DT_OVERLAY=y >> android-kernel/arch/arm64/configs/alioth_defconfig
     
     - name: Apply KernelSU
