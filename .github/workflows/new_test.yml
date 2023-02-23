@@ -58,8 +58,6 @@ jobs:
       run: |
         cd android-kernel
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
-        wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
-        git apply KernelSU.patch
     
     - name: Build kernel
       run: |
@@ -73,6 +71,7 @@ jobs:
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
