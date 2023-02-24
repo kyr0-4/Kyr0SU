@@ -123,6 +123,12 @@ jobs:
       with:
         name: dtbo
         path: ${{ env.ZIMAGE_DIR }}/dtbo.img
+        
+    - name: Upload alioth-sm8250-overlay.dtbo
+      uses: actions/upload-artifact@v3
+      with:
+        name: alioth-sm8250-overlay.dtbo
+        path: ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/alioth-sm8250-overlay.dtbo
 
     - name: Upload DTB image
       uses: actions/upload-artifact@v3
