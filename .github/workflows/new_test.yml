@@ -79,6 +79,8 @@ jobs:
         make O=out CC=${{ env.CLANG_DIR }}/clang $alioth_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
+                      CONFIG_MACH_XIAOMI=y
+                      CONFIG_MACH_XIAOMI_SM8250=y
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
@@ -93,7 +95,8 @@ jobs:
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
                       LLVM=1 \
-                      LLVM_IAS=1
+                      LLVM_IAS=1 \
+                      HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
                       
     - name: generate dtbo and dtb
       run: |
