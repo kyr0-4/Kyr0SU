@@ -73,12 +73,9 @@ jobs:
         KERNEL_DEFCONFIG=alioth_defconfig
         export ARCH="arm64"
         export SUBARCH="arm64"
-        make O=out clean
-        make CONFIG_MACH_XIAOMI=y CONFIG_MACH_XIAOMI_SM8250=y O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
+        make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
-                      CONFIG_MACH_XIAOMI=y
-                      CONFIG_MACH_XIAOMI_SM8250=y
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
