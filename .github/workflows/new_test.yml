@@ -31,25 +31,39 @@ jobs:
         repository: kyr0-4/kyr0SU
         ref: main
         path: anykernel
+
+    - name: Checkout aarch64-zyc-linux-gnu
+      uses: actions/checkout@v3
+      with:
+        github-server-url: 'https://github.com'
+        repository: ZyCromerZ/aarch64-zyc-linux-gnu
+        ref: 13
+        path: aarch64-zyc-linux-gnu
         
+    - name: Checkout arm-zyc-linux-gnueabi
+      uses: actions/checkout@v3
+      with:
+        github-server-url: 'https://github.com'
+        repository: ZyCromerZ/arm-zyc-linux-gnueabi
+        ref: 13
+        path: arm-zyc-linux-gnueabi
+
     - name: Download libufdt utils
       run: |
         mkdir libufdt
         wget -q https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/master/utils.tar.gz -O libufdt.tar.gz
         tar -C libufdt/ -zxf libufdt.tar.gz
         
-    - name: Download Compiler - ZyCromerZ
+    - name: Download Compiler - Snapdragon LLVM
       run: |
-        mkdir clang
-        wget https://raw.githubusercontent.com/ZyCromerZ/Clang/main/Clang-main-link.txt
-        LINK=$(cat 'Clang-main-link.txt')
-        wget -q ${LINK} -O clang.tar.gz
-        tar -C clang/ -zxf clang.tar.gz
+        git clone --depth=1 --branch aosp-13 https://gitlab.com/VoidUI/snapdragon-clang.git
 
     - name: Variables
       run: |
         echo "KERNEL_DIR=$GITHUB_WORKSPACE/android-kernel" >> $GITHUB_ENV
-        echo "CLANG_DIR=$GITHUB_WORKSPACE/clang/bin" >> $GITHUB_ENV
+        echo "CLANG_DIR=$GITHUB_WORKSPACE/snapdragon-clang/bin" >> $GITHUB_ENV
+        echo "GCC_ARM64_DIR=$GITHUB_WORKSPACE/aarch64-zyc-linux-gnu/bin" >> $GITHUB_ENV
+        echo "GCC_ARM_DIR=$GITHUB_WORKSPACE/arm-zyc-linux-gnueabi/bin" >> $GITHUB_ENV
         echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
         echo "ANYKERNEL_DIR=$GITHUB_WORKSPACE/anykernel/anykernel" >> $GITHUB_ENV
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
@@ -77,7 +91,8 @@ jobs:
         make -j$(nproc --all) \
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
-                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-zyc-linux-gnu- \
+                      CROSS_COMPILE_COMPAT=${{ env.GCC_ARM_DIR }}/arm-zyc-linux-gnueabi- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
@@ -85,7 +100,6 @@ jobs:
                       OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
                       OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
-                      HOSTCC=${{ env.CLANG_DIR }}/clang \
                       HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
