@@ -87,8 +87,6 @@ jobs:
         KERNEL_DEFCONFIG=alioth_defconfig
         export ARCH="arm64"
         export SUBARCH="arm64"
-        export CFLAGS="-march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -O3"
-        export LLVMFLAGS="-mllvm -polly -flto=full -O3"
         make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
@@ -104,7 +102,7 @@ jobs:
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
                       LLVM=1 \
                       LLVM_IAS=1 \
-                      HOSTCFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -flto=full"
+                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -flto=full"
                       
     - name: generate dtbo and dtb
       run: |
