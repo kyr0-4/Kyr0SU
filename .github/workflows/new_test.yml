@@ -98,6 +98,11 @@ jobs:
                       LLVM_IAS=1 \
                       CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
                       CXXFLAGS="${CFLAGS}"
+        
+    - name: Build kernel
+      run: |
+        cd android-kernel
+        make dtboimage
                       
     - name: generate dtb
       run: |
