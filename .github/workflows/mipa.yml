@@ -90,6 +90,7 @@ jobs:
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
                       LLVM=1 \
                       LLVM_IAS=1 \
+                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -flto=full"
     
     - name: generate dtb
       run: |
