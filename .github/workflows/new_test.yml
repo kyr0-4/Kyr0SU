@@ -104,13 +104,7 @@ jobs:
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
                       LLVM=1 \
                       LLVM_IAS=1 \
-                      -march=armv8.2-a+crypto+fp16 \
-                      -fno-trapping-math \
-                      -fno-math-errno \
-                      -polly \
-                      -flto=full \
-                      -O3 \
-                      HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
+                      HOSTCFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -flto=full"
                       
     - name: generate dtbo and dtb
       run: |
