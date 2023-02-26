@@ -94,7 +94,25 @@ jobs:
         KERNEL_DEFCONFIG=alioth_defconfig
         export ARCH="arm64"
         export SUBARCH="arm64"
-        make -j$(nproc --all) dtboimage O=out CC=${{ env.CLANG_DIR }}/clang \
+        make -j$(nproc --all) dtboimage \
+                      O=out \
+                      CC=${{ env.CLANG_DIR }}/clang \
+                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
+                      LD=${{ env.CLANG_DIR }}/ld.lld \
+                      AR=${{ env.CLANG_DIR }}/llvm-ar \
+                      NM=${{ env.CLANG_DIR }}/llvm-nm \
+                      STRIP=${{ env.CLANG_DIR }}/llvm-strip \
+                      OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
+                      OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
+                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
+                      HOSTCC=${{ env.CLANG_DIR }}/clang \
+                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
+                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
+                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
+                      LLVM=1 \
+                      LLVM_IAS=1 \
+                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
+                      CXXFLAGS="${CFLAGS}"
                       
     - name: generate dtb
       run: |
