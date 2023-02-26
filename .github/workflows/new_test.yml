@@ -39,14 +39,6 @@ jobs:
         repository: ZyCromerZ/aarch64-zyc-linux-gnu
         ref: 13
         path: aarch64-zyc-linux-gnu
-        
-    - name: Checkout arm-zyc-linux-gnueabi
-      uses: actions/checkout@v3
-      with:
-        github-server-url: 'https://github.com'
-        repository: ZyCromerZ/arm-zyc-linux-gnueabi
-        ref: 13
-        path: arm-zyc-linux-gnueabi
 
     - name: Download libufdt utils
       run: |
@@ -92,7 +84,6 @@ jobs:
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-zyc-linux-gnu- \
-                      CROSS_COMPILE_COMPAT=${{ env.GCC_ARM_DIR }}/arm-zyc-linux-gnueabi- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
