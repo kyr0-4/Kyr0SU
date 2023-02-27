@@ -89,11 +89,11 @@ jobs:
                       LLVM=1 \
                       LLVM_IAS=1 \
                       CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
-                      LDFLAGS="${CFLAGS}"
-                      LDLIBS="${CFLAGS}"
-                      AFLAGS="${CFLAGS}"
-                      CXXFLAGS="${CFLAGS}"
-    
+                      LDFLAGS="${CFLAGS}" \
+                      LDLIBS="${CFLAGS}" \
+                      AFLAGS="${CFLAGS}" \
+                      CXXFLAGS="${CFLAGS}" \
+                      
     - name: generate dtb
       run: |
         find ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtb
