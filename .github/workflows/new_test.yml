@@ -46,6 +46,8 @@ jobs:
         echo "CLANG_DIR=$GITHUB_WORKSPACE/clang/bin" >> $GITHUB_ENV
         echo "ZIMAGE_DIR=$GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot" >> $GITHUB_ENV
         echo "ANYKERNEL_DIR=$GITHUB_WORKSPACE/anykernel/anykernel" >> $GITHUB_ENV
+        rm android-kernel/arch/arm64/configs/alioth_defconfig
+        mv anykernel/alioth_defconfig android-kernel/arch/arm64/configs/
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         LOCALVERSION_LINE=$(grep "CONFIG_LOCALVERSION=" android-kernel/arch/arm64/configs/alioth_defconfig)
         LOCALVERSION_NEW='CONFIG_LOCALVERSION="-Kyr0SU-Redline"'
@@ -69,32 +71,6 @@ jobs:
         export SUBARCH="arm64"
         make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
-                      O=out \
-                      CC=${{ env.CLANG_DIR }}/clang \
-                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
-                      LD=${{ env.CLANG_DIR }}/ld.lld \
-                      AR=${{ env.CLANG_DIR }}/llvm-ar \
-                      NM=${{ env.CLANG_DIR }}/llvm-nm \
-                      STRIP=${{ env.CLANG_DIR }}/llvm-strip \
-                      OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
-                      OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
-                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
-                      HOSTCC=${{ env.CLANG_DIR }}/clang \
-                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
-                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
-                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
-                      LLVM=1 \
-                      LLVM_IAS=1 \
-                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
-                      CXXFLAGS="${CFLAGS}"
-        
-    - name: Build dtbo.img
-      run: |
-        cd android-kernel
-        KERNEL_DEFCONFIG=alioth_defconfig
-        export ARCH="arm64"
-        export SUBARCH="arm64"
-        make -j$(nproc --all) dtboimage \
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
