@@ -21,7 +21,7 @@ jobs:
       with:
         github-server-url: 'https://github.com'
         repository: kyr0-4/kyr0-kernel
-        ref: test
+        ref: test-dts
         path: android-kernel
         
     - name: Checkout AnyKernel
