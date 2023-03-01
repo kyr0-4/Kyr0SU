@@ -61,6 +61,10 @@ jobs:
         echo "FINAL_ZIP=${ZIPNAME}-MiPa-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
         sed -i "s/$LOCALVERSION_LINE/$LOCALVERSION_NEW/g" android-kernel/arch/arm64/configs/vendor/arrow_alioth_defconfig
     
+    - name: Fix:Makefile:Properly disable Unknown Warning Option
+      run: |
+        sed -i 's/CLANG_FLAGS	+= -Werror=unknown-warning-option/CLANG_FLAGS	+= -Werror=unknown-warning-option -Wno-unknown-warning-option/g' "android-kernel/Makefile"   
+    
     - name: Apply KernelSU
       run: |
         cd android-kernel
