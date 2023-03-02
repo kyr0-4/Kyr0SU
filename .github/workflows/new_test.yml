@@ -20,8 +20,8 @@ jobs:
       uses: actions/checkout@v3
       with:
         github-server-url: 'https://github.com'
-        repository: VoidUI-Devices/kernel_xiaomi_sm8250
-        ref: aosp-13
+        repository: kyr0-4/voidui-kernel
+        ref: dtbo
         path: android-kernel
         
     - name: Checkout AnyKernel
@@ -74,6 +74,8 @@ jobs:
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
                       CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE_ARM32=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      CROSS_COMPILE_COMPAT=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
@@ -85,11 +87,12 @@ jobs:
                       HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
-                      LLVM=1 \
                       LLVM_IAS=1 \
                       CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
+                      LDFLAGS="${CFLAGS}" \
+                      LDLIBS="${CFLAGS}" \
+                      AFLAGS="${CFLAGS}" \
                       CXXFLAGS="${CFLAGS}" \
-                      Image.gz-dtb dtbo.img\
                       
     - name: generate dtb
       run: |
