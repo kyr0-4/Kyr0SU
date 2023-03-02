@@ -103,6 +103,12 @@ jobs:
       with:
         name: Image
         path: ${{ env.ZIMAGE_DIR }}/Image
+        
+    - name: Upload the kernel Image.gz
+      uses: actions/upload-artifact@v3
+      with:
+        name: Image.gz
+        path: ${{ env.ZIMAGE_DIR }}/Image.gz
 
     - name: Upload DTBO image
       uses: actions/upload-artifact@v3
