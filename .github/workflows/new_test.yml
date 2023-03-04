@@ -75,6 +75,7 @@ jobs:
                       CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
                       CROSS_COMPILE_COMPAT=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
                       CROSS_COMPILE_ARM32=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      LD=${{ env.CLANG_DIR }}/ld.lld \
                       AR=${{ env.CLANG_DIR }}/llvm-ar \
                       NM=${{ env.CLANG_DIR }}/llvm-nm \
                       STRIP=${{ env.CLANG_DIR }}/llvm-strip \
@@ -84,6 +85,7 @@ jobs:
                       HOSTCC=${{ env.CLANG_DIR }}/clang \
                       HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
+                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
                       LLVM_IAS=1 \
                       
     - name: generate dtb
