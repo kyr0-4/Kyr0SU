@@ -66,7 +66,6 @@ jobs:
         alioth_DEFCONFIG=vendor/xiaomi/alioth.config
         export ARCH="arm64"
         export SUBARCH="arm64"
-        make O=out clean
         make O=out CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make O=out CC=${{ env.CLANG_DIR }}/clang $sm8250_DEFCONFIG
         make O=out CC=${{ env.CLANG_DIR }}/clang $alioth_DEFCONFIG
