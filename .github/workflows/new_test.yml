@@ -20,8 +20,8 @@ jobs:
       uses: actions/checkout@v3
       with:
         github-server-url: 'https://github.com'
-        repository: kyr0-4/voidui-kernel
-        ref: audio
+        repository: kyr0-4/Pendragon
+        ref: drivers
         path: android-kernel
         
     - name: Checkout AnyKernel
