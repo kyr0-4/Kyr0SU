@@ -49,19 +49,16 @@ jobs:
         rm android-kernel/arch/arm64/configs/alioth_defconfig
         mv anykernel/alioth_defconfig android-kernel/arch/arm64/configs/
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
-        LOCALVERSION_LINE=$(grep "CONFIG_LOCALVERSION=" android-kernel/arch/arm64/configs/alioth_defconfig)
-        LOCALVERSION_NEW='CONFIG_LOCALVERSION="-Kyr0SU-Redline"'
         DEVICE=alioth
         ZIPNAME=Kyr0SU
         echo "FINAL_ZIP=${ZIPNAME}-Redline-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
-        sed -i "s/$LOCALVERSION_LINE/$LOCALVERSION_NEW/g" android-kernel/arch/arm64/configs/alioth_defconfig
     
     - name: Apply KernelSU
       run: |
         cd android-kernel
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
-        git apply KernelSU.patch
+        git apply ./KernelSU.patch
     
     - name: Build kernel
       run: |
