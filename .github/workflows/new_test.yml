@@ -39,6 +39,12 @@ jobs:
         LINK=$(cat 'Clang-main-link.txt')
         wget -q ${LINK} -O clang.tar.gz
         tar -C clang/ -zxf clang.tar.gz
+        
+    - name: Download libufdt utils
+      run: |
+        mkdir libufdt
+        wget -q https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/master/utils.tar.gz -O libufdt.tar.gz
+        tar -C libufdt/ -zxf libufdt.tar.gz
 
     - name: Variables
       run: |
@@ -120,6 +126,22 @@ jobs:
                       LDLIBS="${CFLAGS}" \
                       AFLAGS="${CFLAGS}" \
                       CXXFLAGS="${CFLAGS}" \
+                      
+    - name: generate dtbo.img
+      run: |
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/apollo-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/cas-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/cmi-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/dagu-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/elish-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/enuma-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/lmi-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/munch-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/psyche-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/thyme-sm8250-overlay.dtbo
+        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/umi-sm8250-overlay.dtbo
+        cd libufdt/src 
+        python mkdtboimg.py create ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtbo.img --page_size=4096 ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/*.dtbo
                       
     - name: generate dtb
       run: |
