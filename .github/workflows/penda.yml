@@ -66,7 +66,9 @@ jobs:
     - name: Build defconfig
       run: |
         cd android-kernel
-        KERNEL_DEFCONFIG=alioth_defconfig
+        KERNEL_DEFCONFIG=vendor/kona-perf_defconfig
+        sm8250_DEFCONFIG=vendor/xiaomi/sm8250-common.config
+        alioth_DEFCONFIG=vendor/xiaomi/alioth.config
         export ARCH="arm64"
         export SUBARCH="arm64"
         make -j$(nproc --all) \
@@ -76,23 +78,20 @@ jobs:
                       CROSS_COMPILE_ARM32=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
                       CROSS_COMPILE_COMPAT=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
                       $KERNEL_DEFCONFIG
-                      LD=${{ env.CLANG_DIR }}/ld.lld \
-                      AR=${{ env.CLANG_DIR }}/llvm-ar \
-                      NM=${{ env.CLANG_DIR }}/llvm-nm \
-                      STRIP=${{ env.CLANG_DIR }}/llvm-strip \
-                      OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
-                      OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
-                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
-                      HOSTCC=${{ env.CLANG_DIR }}/clang \
-                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
-                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
-                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
-                      LLVM_IAS=1 \
-                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
-                      LDFLAGS="${CFLAGS}" \
-                      LDLIBS="${CFLAGS}" \
-                      AFLAGS="${CFLAGS}" \
-                      CXXFLAGS="${CFLAGS}" \
+        make -j$(nproc --all) \
+                      O=out \
+                      CC=${{ env.CLANG_DIR }}/clang \
+                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE_ARM32=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      CROSS_COMPILE_COMPAT=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      $sm8250_DEFCONFIG
+         make -j$(nproc --all) \
+                      O=out \
+                      CC=${{ env.CLANG_DIR }}/clang \
+                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
+                      CROSS_COMPILE_ARM32=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      CROSS_COMPILE_COMPAT=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      $alioth_DEFCONFIG      
 
     - name: Build kernel
       run: |
