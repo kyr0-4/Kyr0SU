@@ -125,17 +125,6 @@ jobs:
                       
     - name: generate dtbo.img
       run: |
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/apollo-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/cas-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/cmi-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/dagu-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/elish-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/enuma-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/lmi-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/munch-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/psyche-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/thyme-sm8250-overlay.dtbo
-        rm ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/umi-sm8250-overlay.dtbo
         cd libufdt/src 
         python mkdtboimg.py create ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtbo.img --page_size=4096 ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/*.dtbo
                       
