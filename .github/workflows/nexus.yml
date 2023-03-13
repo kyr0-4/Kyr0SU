@@ -124,7 +124,7 @@ jobs:
                       OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
                       LLVM_IAS=1 \
-                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
+                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -ftrivial-auto-var-init=zero -polly -polly-vectorizer=stripmine -flto=full -pipe" \
                       LDFLAGS="${CFLAGS}" \
                       LDLIBS="${CFLAGS}" \
                       AFLAGS="${CFLAGS}" \
