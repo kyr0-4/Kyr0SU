@@ -69,7 +69,7 @@ jobs:
     - name: Build defconfig
       run: |
         cd android-kernel
-        KERNEL_DEFCONFIG=alioth_defconfig
+        KERNEL_DEFCONFIG=vendor/arrow_alioth_defconfig
         export ARCH="arm64"
         export SUBARCH="arm64"
         make -j$(nproc --all) \
@@ -94,8 +94,8 @@ jobs:
     - name: Build kernel
       run: |
         cd android-kernel
-        ARCH=arm64
-        SUBARCH=arm64
+        export ARCH="arm64"
+        export SUBARCH="arm64"
         make -j$(nproc --all) \
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
