@@ -99,6 +99,7 @@ jobs:
         make -j$(nproc --all) \
                       O=out \
                       CC=${{ env.CLANG_DIR }}/clang \
+                      CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/aarch64-none-linux-gnu- \
                       CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-none-linux-gnu- \
                       CROSS_COMPILE_COMPAT=${{ env.GCC_ARM_DIR }}/arm-none-linux-gnueabihf- \
                       LD=${{ env.CLANG_DIR }}/ld.lld \
@@ -108,9 +109,7 @@ jobs:
                       OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
                       OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
-                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
-                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
-                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
+                      LLVM=1 \
                       LLVM_IAS=1
                       
     - name: generate dtb
