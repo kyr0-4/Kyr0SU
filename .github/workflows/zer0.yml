@@ -66,38 +66,17 @@ jobs:
         wget -q "https://raw.githubusercontent.com/CHIZI-0618/RK-KernelSU_Action/main/KernelSU.patch" -O KernelSU.patch
         git apply ./KernelSU.patch
     
-    - name: Build defconfig
-      run: |
-        cd android-kernel
-        KERNEL_DEFCONFIG=vendor/arrow_alioth_defconfig
-        export ARCH="arm64"
-        export SUBARCH="arm64"
-        make -j$(nproc --all) \
-                      O=out \
-                      CC=${{ env.CLANG_DIR }}/clang \
-                      CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-none-linux-gnu- \
-                      CROSS_COMPILE_ARM32=${{ env.GCC_ARM_DIR }}/arm-none-linux-gnueabihf- \
-                      CROSS_COMPILE_COMPAT=${{ env.GCC_ARM_DIR }}/arm-none-linux-gnueabihf- \
-                      $KERNEL_DEFCONFIG
-                      LD=${{ env.CLANG_DIR }}/ld.lld \
-                      AR=${{ env.CLANG_DIR }}/llvm-ar \
-                      NM=${{ env.CLANG_DIR }}/llvm-nm \
-                      STRIP=${{ env.CLANG_DIR }}/llvm-strip \
-                      OBJCOPY=${{ env.CLANG_DIR }}/llvm-objcopy \
-                      OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
-                      READELF=${{ env.CLANG_DIR }}/llvm-readelf \
-                      HOSTCXX=${{ env.CLANG_DIR }}/clang++ \
-                      HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
-                      HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
-                      LLVM_IAS=1
-    
     - name: Build kernel
       run: |
         cd android-kernel
-        export ARCH="arm64"
-        export SUBARCH="arm64"
+        KERNEL_DEFCONFIG=vendor/arrow_alioth_defconfig
+        ARCH=arm64
+        SUBARCH=arm64
+        make O=out clean
+        make O=out ARCH=arm64 CC=${{ env.CLANG_DIR }}/clang $KERNEL_DEFCONFIG
         make -j$(nproc --all) \
                       O=out \
+                      ARCH=arm64 \
                       CC=${{ env.CLANG_DIR }}/clang \
                       CLANG_TRIPLE=${{ env.GCC_ARM64_DIR }}/aarch64-none-linux-gnu- \
                       CROSS_COMPILE=${{ env.GCC_ARM64_DIR }}/aarch64-none-linux-gnu- \
