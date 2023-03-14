@@ -89,7 +89,7 @@ jobs:
                       OBJDUMP=${{ env.CLANG_DIR }}/llvm-objdump \
                       READELF=${{ env.CLANG_DIR }}/llvm-readelf \
                       LLVM_IAS=1 \
-                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm" \
+                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -mfpu=neon -fno-trapping-math -fno-math-errno -mllvm" \
                       
     - name: generate dtb
       run: |
