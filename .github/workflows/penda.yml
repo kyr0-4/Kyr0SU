@@ -20,8 +20,8 @@ jobs:
       uses: actions/checkout@v3
       with:
         github-server-url: 'https://github.com'
-        repository: kyr0-4/test
-        ref: fix
+        repository: kyr0-4/Pendragon
+        ref: test
         path: android-kernel
         
     - name: Checkout AnyKernel
@@ -122,11 +122,6 @@ jobs:
                       AFLAGS="${CFLAGS}" \
                       CXXFLAGS="${CFLAGS}" \
                       
-    - name: generate dtbo.img
-      run: |
-        cd libufdt/src 
-        python mkdtboimg.py create ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtbo.img --page_size=4096 ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom/*.dtbo
-                      
     - name: generate dtb
       run: |
         find ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtb
@@ -134,7 +129,7 @@ jobs:
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
       with:
-        name: Image.gz
+        name: Image
         path: ${{ env.ZIMAGE_DIR }}/Image
 
     - name: Upload DTBO image
