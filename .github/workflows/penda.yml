@@ -1,4 +1,4 @@
-name: kyr0SU for Alioth (Redline_kernel+KernelSU+Snapdragon LLVM 16.0.3)
+name: kyr0SU for Alioth (Pendragon_kernel+KernelSU+Snapdragon LLVM 16.0.3)
 
 on: 
   schedule:
@@ -49,6 +49,7 @@ jobs:
         TIME=$(TZ=America/Mexico_City date "+%Y%m%d%H%M")
         DEVICE=alioth
         ZIPNAME=Kyr0SU
+        echo "FINAL_ZIP=${ZIPNAME}-Pendragon-${DEVICE}-KERNEL-AOSP-${TIME}" >> $GITHUB_ENV
     
     - name: Apply KernelSU
       run: |
