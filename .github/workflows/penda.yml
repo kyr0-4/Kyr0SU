@@ -39,12 +39,6 @@ jobs:
         LINK=$(cat 'Clang-main-link.txt')
         wget -q ${LINK} -O clang.tar.gz
         tar -C clang/ -zxf clang.tar.gz
-        
-    - name: Download libufdt utils
-      run: |
-        mkdir libufdt
-        wget -q https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/master/utils.tar.gz -O libufdt.tar.gz
-        tar -C libufdt/ -zxf libufdt.tar.gz
 
     - name: Variables
       run: |
