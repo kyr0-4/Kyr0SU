@@ -116,10 +116,6 @@ jobs:
                       LDLIBS="${CFLAGS}" \
                       AFLAGS="${CFLAGS}" \
                       CXXFLAGS="${CFLAGS}" \
-                      
-    - name: generate dtb
-      run: |
-        find ${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dts/vendor/qcom -name '*.dtb' -exec cat {} + >${{ env.KERNEL_DIR }}/out/arch/arm64/boot/dtb
     
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
