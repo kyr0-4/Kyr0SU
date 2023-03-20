@@ -21,7 +21,7 @@ jobs:
       with:
         github-server-url: 'https://github.com'
         repository: kyr0-4/Pendragon
-        ref: cflags_test
+        ref: sofi
         path: android-kernel
         
     - name: Checkout AnyKernel
@@ -111,12 +111,7 @@ jobs:
                       HOSTAR=${{ env.CLANG_DIR }}/llvm-ar \
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
                       LLVM=1 \
-                      LLVM_IAS=1 \
-                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
-                      LDFLAGS="${CFLAGS}" \
-                      LDLIBS="${CFLAGS}" \
-                      AFLAGS="${CFLAGS}" \
-                      CXXFLAGS="${CFLAGS}" \
+                      LLVM_IAS=1
     
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
