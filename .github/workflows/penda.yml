@@ -21,7 +21,7 @@ jobs:
       with:
         github-server-url: 'https://github.com'
         repository: kyr0-4/Pendragon
-        ref: hin
+        ref: cflags_test
         path: android-kernel
         
     - name: Checkout AnyKernel
