@@ -91,14 +91,13 @@ jobs:
     - name: Build kernel
       run: |
         cd android-kernel
+        export PATH=${{ env.CLANG_DIR }}:$PATH
         export ARCH="arm64"
         export SUBARCH="arm64"
         make -j$(nproc --all) \
                       O=out \
-                      CC=${{ env.CLANG_DIR }}/clang \
-                      CROSS_COMPILE=${{ env.CLANG_DIR }}/aarch64-linux-gnu- \
-                      CROSS_COMPILE_ARM32=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
-                      CROSS_COMPILE_COMPAT=${{ env.CLANG_DIR }}/arm-linux-gnueabi- \
+                      CC=clang \
+                      CROSS_COMPILE=aarch64-linux-gnu- \
     
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
