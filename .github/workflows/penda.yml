@@ -96,8 +96,7 @@ jobs:
         export SUBARCH="arm64"
         make -j$(nproc --all) \
                       O=out \
-                      CC=clang \
-                      CROSS_COMPILE=aarch64-linux-gnu- \
+                      CC=clang --target=aarch64-linux-gnu foo.c
     
     - name: Upload the kernel image
       uses: actions/upload-artifact@v3
