@@ -21,7 +21,7 @@ jobs:
       with:
         github-server-url: 'https://github.com'
         repository: kyr0-4/Pendragon
-        ref: base
+        ref: ner0
         path: android-kernel
         
     - name: Checkout AnyKernel
