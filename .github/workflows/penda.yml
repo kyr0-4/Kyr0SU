@@ -1,4 +1,4 @@
-name: kyr0SU for Alioth (Pendragon_kernel+KernelSU+Snapdragon LLVM 16.0.3)
+name: kyr0SU for Alioth (Pendragon_kernel+KernelSU+ZyC Clang)
 
 on: 
   schedule:
