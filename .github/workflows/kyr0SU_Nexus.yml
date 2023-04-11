@@ -1,4 +1,4 @@
-name: kyr0SU for Alioth (Nexus_kernel+KernelSU+Snapdragon LLVM 16.0.3)
+name: kyr0SU for Alioth (Nexus_kernel+KernelSU+ZyC Clang)
 
 on: 
   schedule:
@@ -85,8 +85,6 @@ jobs:
                       HOSTLD=${{ env.CLANG_DIR }}/ld.lld \
                       LLVM=1 \
                       LLVM_IAS=1 \
-                      CFLAGS="-O3 -march=armv8.2-a+crypto+fp16 -fno-trapping-math -fno-math-errno -mllvm -polly -polly-vectorizer=stripmine -flto=full -pipe" \
-                      CXXFLAGS="${CFLAGS}"
     
     - name: generate dtb
       run: |
